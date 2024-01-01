@@ -9,10 +9,10 @@ from bs4 import BeautifulSoup
 class OntologyAdapter():
     SKIP_BIOCYPHER = True
     OUTPUT_PATH = './parsed-data'
-
+    file_path = 'file:///home/wendecoder/Downloads/pc_compound2descriptor.owl'
     ONTOLOGIES = {
         
-        'pcco': 'file:///home/wendecoder/Downloads/pc_compound2descriptor.owl',
+        'pcco': file_path,
     }
 
     HAS_ATTRIBUTE = rdflib.term.URIRef("http://semanticscience.org/resource/SIO_000008")
@@ -100,7 +100,7 @@ class OntologyAdapter():
                 # avoiding blank nodes and other arbitrary node types
                 if not isinstance(node, rdflib.term.URIRef):
                     continue
-                if str(node) == 'http://anonymous':
+                if str(node) == 'http://anonymous' or str(node) == self.file_path:
                     continue
                 # print(node)
                 # term_id = str(node).split('/')[-1]
