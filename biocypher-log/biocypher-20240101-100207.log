@@ -1,0 +1,6 @@
+2024-01-01 10:02:07,305	INFO	module:_logger
+This is BioCypher v0.5.34.
+2024-01-01 10:02:07,306	INFO	module:_logger
+Logging into `biocypher-log/biocypher-20240101-100207.log`.
+2024-01-01 10:02:08,284	INFO	module:create_knowledge_graph
+Running adapter: onotology_terms

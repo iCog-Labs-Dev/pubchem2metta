@@ -1,0 +1,18 @@
+2023-12-26 16:31:00,850	INFO	module:_logger
+This is BioCypher v0.5.34.
+2023-12-26 16:31:00,851	INFO	module:_logger
+Logging into `biocypher-log/biocypher-20231226-163100.log`.
+2023-12-26 16:31:01,970	INFO	module:_ontology
+Loading ontologies...
+2023-12-26 16:31:01,970	INFO	module:_ontology
+Instantiating OntologyAdapter class for https://github.com/biolink/biolink-model/raw/v3.2.1/biolink-model.owl.ttl.
+2023-12-26 16:31:04,875	INFO	module:metta_writer
+Type hierarchy created successfully.
+2023-12-26 16:31:04,875	INFO	module:create_knowledge_graph
+Running adapter: onotology_terms
+2023-12-26 16:31:09,243	INFO	module:metta_writer
+Finished writing out nodes
+2023-12-26 16:31:09,244	INFO	module:create_knowledge_graph
+Running adapter: onotology_relationships
+2023-12-26 16:31:09,281	INFO	module:create_knowledge_graph
+Done

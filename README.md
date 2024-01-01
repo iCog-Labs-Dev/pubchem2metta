@@ -1,1 +1,1 @@
-# pubchem2metta
+# pubchemMetta

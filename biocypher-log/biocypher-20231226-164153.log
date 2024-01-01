@@ -1,0 +1,12 @@
+2023-12-26 16:41:53,713	INFO	module:_logger
+This is BioCypher v0.5.34.
+2023-12-26 16:41:53,713	INFO	module:_logger
+Logging into `biocypher-log/biocypher-20231226-164153.log`.
+2023-12-26 16:41:54,772	INFO	module:create_knowledge_graph
+Running adapter: onotology_terms
+2023-12-26 16:41:58,852	INFO	module:metta_writer
+Finished writing out nodes
+2023-12-26 16:41:58,852	INFO	module:create_knowledge_graph
+Running adapter: onotology_relationships
+2023-12-26 16:41:58,852	INFO	module:create_knowledge_graph
+Done
