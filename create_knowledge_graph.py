@@ -8,7 +8,7 @@ from adapters.compound_adapter import CompoundAdapter
 ADAPTERS = {
     "compound": {
         "adapter": CompoundAdapter(
-            filepath="samples/pc_compound2descriptor_000001_chunk_1.xml"
+            filepath="samples/pc_compound2descriptor_000001_chunk_1.xml", dry_run=True
         ),
         "outdir": "compound_complexity",
         "nodes": True,
