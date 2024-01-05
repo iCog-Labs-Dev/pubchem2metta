@@ -89,6 +89,7 @@ class CompoundAdapter(Adapter):
                 nodes_dict[subject] = object
 
             nodes = nodes_dict.keys()
+            nodes = nodes[:100] if self.dry_run else nodes
 
             i = 0  # dry run is set to true just output the first 100 nodes
             for node in tqdm(nodes, desc="Loading compounds", unit="compound"):
