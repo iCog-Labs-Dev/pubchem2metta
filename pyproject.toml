@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "pubchem2metta"
+version = "0.1.0"
+description = "Package built to convert pubchem data to metta files"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+biocypher = "0.5.4"
+owlready2 = "^0.45"
+requests = "^2.31.0"
+tqdm = "^4.66.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
