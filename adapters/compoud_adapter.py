@@ -1,18 +1,17 @@
-import os
-import json
 import rdflib
 from owlready2 import *
-from adapters.Adapter import Adapter
+from tqdm import tqdm
+from adapters import Adapter
+from biocypher._logger import logger
+
 import requests
-from bs4 import BeautifulSoup
 
 
-class CompoundAdapter:
-    SKIP_BIOCYPHER = True
+class CompoundAdapter(Adapter):
     OUTPUT_PATH = "./parsed-data"
-    file_path = "file:///home/wendecoder/Downloads/pc_compound2descriptor.owl"
+
     ONTOLOGIES = {
-        "pcco": file_path,
+        # "pubchem": "file:///home/wendecoder/Downloads/pc_compound2descriptor.owl",
     }
 
     HAS_ATTRIBUTE = rdflib.term.URIRef("http://semanticscience.org/resource/SIO_000008")
@@ -28,120 +27,87 @@ class CompoundAdapter:
     HAS_ISOTOPOLOGUE = rdflib.term.URIRef(
         "http://semanticscience.org/resource/CHEMINF_000455"
     )
-    HAS_UNCHARGED_COUNTERPART = rdflib.term.URIRef(
-        "http://semanticscience.org/resource/CHEMINF_000477"
-    )
     HAS_SAME_CONNECTIVITY_WITH = rdflib.term.URIRef(
         "http://semanticscience.org/resource/CHEMINF_000462"
     )
     TYPE = rdflib.term.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-    HAS_2D_SIMILAR_COMPOUND = rdflib.term.URIRef(
-        "http://semanticscience.org/resource/CHEMINF_000482"
-    )
-    HAS_3D_SIMILAR_COMPOUND = rdflib.term.URIRef(
-        "http://semanticscience.org/resource/CHEMINF_000483"
-    )
     LABEL = rdflib.term.URIRef("http://www.w3.org/2000/01/rdf-schema#label")
     RESTRICTION = rdflib.term.URIRef("http://www.w3.org/2002/07/owl#Restriction")
     DESCRIPTION = rdflib.term.URIRef("http://purl.org/dc/terms/description")
-    ON_PROPERTY = rdflib.term.URIRef("http://www.w3.org/2002/07/owl#onProperty")
-    SOME_VALUES_FROM = rdflib.term.URIRef(
-        "http://www.w3.org/2002/07/owl#someValuesFrom"
-    )
-    ALL_VALUES_FROM = rdflib.term.URIRef("http://www.w3.org/2002/07/owl#allValuesFrom")
     SUBCLASS = rdflib.term.URIRef("http://www.w3.org/2000/01/rdf-schema#subClassOf")
 
     PREDICATES = [SUBCLASS, HAS_PARENT, HAS_ISOTOPOLOGUE, HAS_STEREOISOMER]
-    RESTRICTION_PREDICATES = [HAS_COMPONENT, HAS_PARENT]
 
-    def __init__(self, type="node", dry_run=False):
-        self.type = type
-        self.dry_run = False
-        if type == "node":
-            self.label = "ontology_term COMPOUND"
-        elif type == "edge":
-            self.label = "ontology_relationship"
-        else:
-            raise ValueError("Invalid type. Allowed values: node, edge")
+    def __init__(self, filepath=None, label="compound", dry_run=False):
+        self.label = label
+        if not filepath:
+            logger.error("Input file not specified")
+            raise ValueError("Input file not specified")
 
-    def getValue(self, id):
-        print(id)
-        url = url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{id}/JSON"
+        if not os.path.exists(filepath):
+            logger.error(f"Input file {filepath} doesn't exist")
+            raise FileNotFoundError(f"Input file {filepath} doesn't exist")
+
+        # To convert the file path to format tollerable suitable for the owlready
+        filepath = os.path.realpath(filepath)
+
+        self.dry_run = dry_run
+        CompoundAdapter.ONTOLOGIES[label] = f"file://{filepath}"
+        self.file_path = filepath
+
+    def __getValue(self, id):
+        url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{id}/JSON"
+        # logger.info(f"Loading {id} from {url}")
         try:
             response = requests.get(url)
             if response.status_code == 200:
                 data = response.json()
                 return data
-
             else:
-                print(f"Error: {response.status_code}")
+                errorMessage = response.json()["Fault"]["Message"]
+                # logger.error(f"{errorMessage} Status {response.status_code}")
         except requests.RequestException as e:
-            print(f"Request failed: {e}")
+            # logger.error(f"Request failed: {e}")
+            return None
 
-    def get_graph(self, ontology):
+    def __get_graph(self, ontology):
         onto = get_ontology(CompoundAdapter.ONTOLOGIES[ontology]).load()
         self.graph = default_world.as_rdflib_graph()
-        # self.graph = onto.as_rdflib_graph()
         self.clear_cache()
         return self.graph
 
     def get_nodes(self):
         for ontology in CompoundAdapter.ONTOLOGIES.keys():
-            self.graph = self.get_graph(ontology)
-            # print(list(self.graph.all_nodes()))
+            self.graph = self.__get_graph(ontology)
             self.cache_node_properties()
-            # nodes_in_go_namespaces = self.find_go_nodes(self.graph)
-            # nodes = nodes_in_go_namespaces.keys()
-            subObject = list(self.graph.subject_objects())
+            subject_objects = list(self.graph.subject_objects())
+
             nodes_dict = {}
-            for n in subObject:
-                node = n[0]
-                nodes_dict[node] = n[1]
+
+            for entry in subject_objects:
+                (subject, object) = entry
+                nodes_dict[subject] = object
+
             nodes = nodes_dict.keys()
-            # print(list(nodes))
-            # nodes = list(self.graph.subject_objects())
-            i = 0  # dry run is set to true just output the first 1000 nodes
-            for node in nodes:
+
+            i = 0  # dry run is set to true just output the first 100 nodes
+            for node in tqdm(nodes, desc="Loading compounds", unit="compound"):
                 if i > 100 and self.dry_run:
                     break
-                # print(node)
+
                 # avoiding blank nodes and other arbitrary node types
                 if not isinstance(node, rdflib.term.URIRef):
                     continue
-                if str(node) == "http://anonymous" or str(node) == self.file_path:
-                    continue
-                # print(node)
-                # term_id = str(node).split('/')[-1]
-                print(node)
+                # if str(node) == "http://anonymous" or "@prefix":
+                #     continue
                 term_id = CompoundAdapter.to_key(node)
-                data = self.getValue(term_id[3:])
-                print("term id", term_id)
-                # attribute = str(','.join(self.get_all_property_values_from_node(node, 'attributes')))
-                # attributesList = attribute.split(',')
-                # print(attributesList)
-                props = {
-                    # 'uri': str(node),44444444444444
-                    # 'attribute' : ' '.join(self.get_all_property_values_from_node(node, 'attributes')),
-                    # 'Canonical_SMILES' : self.getValue(attributesList[0]),
-                    # 'Compound_Identifier' : self.getValue(attributesList[1]),
-                    # 'Covalent_Unit_Count' : self.getValue(attributesList[2]),
-                    # 'Defined_Atom_Stereo_Count' : self.getValue(attributesList[3]),
-                    # 'Defined_Bond_Stereo_Count' : self.getValue(attributesList[4]),
-                    # 'Exact_Mass' : self.getValue(attributesList[5]),
-                    # 'Hydrogen_Bond_Acceptor_Count' : self.getValue(attributesList[6]),
-                    # 'Hydrogen_Bond_Donor_Count' : self.getValue(attributesList[7]),
-                    # 'IUPAC_InChI' : self.getValue(attributesList[8]),
-                    # 'Isomeric_SMILES' : self.getValue(attributesList[9]),
-                    # 'Isotope_Atom_Count' : self.getValue(attributesList[10]),
-                    # 'Molecular_Formula' : self.getValue(attributesList[11]),
-                    # 'Molecular_Weight' : self.getValue(attributesList[12]),
-                    # 'Mono_Isotopic_Weight' : self.getValue(attributesList[13]),
-                    # 'synonyms': self.get_all_property_values_from_node(node, 'related_synonyms') +
-                    # self.get_all_property_values_from_node(node, 'exact_synonyms'),
-                    # 'subontology': nodes_in_go_namespaces.get(node, None),
-                    "source": ontology.upper(),
-                    "source_url": f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{term_id[3:]}/JSON",
-                }
+                data = self.__getValue(term_id)
+                # logger.info(f"Node: {node} with term id {term_id}")
+
+                props = {}
+                if data is None:
+                    continue
+
                 if "PC_Compounds" in data:
                     compound_info = data["PC_Compounds"][0]
                     excluded_properties = [
@@ -176,6 +142,7 @@ class CompoundAdapter:
                         )
                         prop_value = property["value"][value_key]
                         props[prop_name] = prop_value
+
                     for key, count in compound_info.get("count", []).items():
                         if key == "heavy_atom":
                             props["Non-hydrogen_Atom_Count"] = count
@@ -193,99 +160,8 @@ class CompoundAdapter:
                             props["Isotope_Atom_Count"] = count
 
                     props["Total_Formal_Charge"] = compound_info.get("charge", "")
-                    # print(props)
                 i += 1
                 yield term_id, self.label, props
-
-    def get_edges(self):
-        for ontology in CompoundAdapter.ONTOLOGIES.keys():
-            self.graph = self.get_graph(ontology)
-            self.cache_edge_properties()
-            for predicate in CompoundAdapter.PREDICATES:
-                edges = list(
-                    self.graph.subject_objects(predicate=predicate, unique=True)
-                )
-                i = 0  # dry run is set to true just output the first 100 relationships
-                for edge in edges:
-                    if i > 100 and self.dry_run:
-                        break
-                    from_node, to_node = edge
-
-                    if self.is_blank(from_node):
-                        continue
-
-                    if self.is_blank(to_node) and self.is_a_restriction_block(to_node):
-                        (
-                            restriction_predicate,
-                            restriction_node,
-                        ) = self.read_restriction_block(to_node)
-                        if restriction_predicate is None or restriction_node is None:
-                            continue
-
-                        predicate = restriction_predicate
-                        to_node = restriction_node
-
-                    if self.type == "edge":
-                        from_node_key = CompoundAdapter.to_key(from_node)
-                        predicate_key = CompoundAdapter.to_key(predicate)
-                        to_node_key = CompoundAdapter.to_key(to_node)
-
-                        if predicate == CompoundAdapter.DB_XREF:
-                            if to_node.__class__ == rdflib.term.Literal:
-                                if str(to_node) == str(from_node):
-                                    print("Skipping self xref for: " + from_node_key)
-                                    continue
-
-                                # only accepting IDs in the form <ontology>:<ontology_id>
-                                if len(str(to_node).split(":")) != 2:
-                                    print(
-                                        "Unsupported format for xref: " + str(to_node)
-                                    )
-                                    continue
-
-                                to_node_key = str(to_node).replace(":", "_")
-
-                                if from_node_key == to_node_key:
-                                    print("Skipping self xref for: " + from_node_key)
-                                    continue
-                            else:
-                                print(
-                                    "Ignoring non literal xref: {}".format(str(to_node))
-                                )
-                                continue
-
-                        predicate_name = self.predicate_name(predicate)
-                        if predicate_name == "dbxref":
-                            continue  # TODO should we skip dbxref edges?
-                        key = "{}_{}_{}".format(
-                            from_node_key, predicate_key, to_node_key
-                        )
-                        props = {
-                            "rel_type": self.predicate_name(predicate),
-                            "source": ontology.upper(),
-                            "source_url": CompoundAdapter.ONTOLOGIES[ontology],
-                        }
-
-                        yield key, from_node_key, to_node_key, self.label, props
-                        i += 1
-
-    def predicate_name(self, predicate):
-        predicate = str(predicate)
-        if predicate == str(CompoundAdapter.HAS_PARENT):
-            return "has_parent"
-        elif predicate == str(CompoundAdapter.HAS_COMPONENT):
-            return "has_component"
-        elif predicate == str(CompoundAdapter.SUBCLASS):
-            return "subclass"
-        elif predicate == str(CompoundAdapter.HAS_STEREOISOMER):
-            return "has_stereoisomer"
-        elif predicate == str(CompoundAdapter.HAS_ISOTOPOLOGUE):
-            return "has_isotopologue"
-        elif predicate == str(CompoundAdapter.HAS_2D_SIMILAR_COMPOUND):
-            return "has_2d_similar_compound"
-        elif predicate == str(CompoundAdapter.HAS_3D_SIMILAR_COMPOUND):
-            return "has_3d_similar_compound"
-        return ""
 
     @classmethod
     def to_key(cls, node_uri):
@@ -301,59 +177,22 @@ class CompoundAdapter:
 
         return key
 
-    def is_a_restriction_block(self, node):
-        node_type = self.get_all_property_values_from_node(node, "node_types")
-        return node_type and node_type[0] == CompoundAdapter.RESTRICTION
+    @classmethod
+    def extract_id(cls, id):
+        try:
+            match = re.search(r"\d{2,}", id)
+            if match:
+                return match.group()
+            else:
+                return ""
 
-    def read_restriction_block(self, node):
-        restricted_property = self.get_all_property_values_from_node(
-            node, "on_property"
-        )
-
-        # assuming a restriction block will always contain only one `owl:onProperty` triple
-        if (
-            restricted_property
-            and restricted_property[0] not in CompoundAdapter.RESTRICTION_PREDICATES
-        ):
-            return None, None
-
-        restriction_predicate = str(restricted_property[0])
-
-        # returning the pair (owl:onProperty value, owl:someValuesFrom or owl:allValuesFrom value)
-        # assuming a owl:Restriction block in a rdf:subClassOf will contain only one `owl:someValuesFrom` or `owl:allValuesFrom` triple
-        some_values_from = self.get_all_property_values_from_node(
-            node, "some_values_from"
-        )
-        if some_values_from:
-            return (restriction_predicate, some_values_from[0])
-
-        all_values_from = self.get_all_property_values_from_node(
-            node, "all_values_from"
-        )
-        if all_values_from:
-            return (restriction_predicate, all_values_from[0])
-
-        return (None, None)
-
-    def is_blank(self, node):
-        # a BNode according to rdflib is a general node (as a 'catch all' node) that doesn't have any type such as Class, Literal, etc.
-        BLANK_NODE = rdflib.term.BNode
-
-        return isinstance(node, BLANK_NODE)
+        except Exception as e:
+            logger.error(f"{e}")
+            return ""
 
     # it's faster to load all subject/objects beforehand
     def clear_cache(self):
         self.cache = {}
-
-    def cache_edge_properties(self):
-        self.cache["node_types"] = self.cache_predicate(CompoundAdapter.TYPE)
-        self.cache["on_property"] = self.cache_predicate(CompoundAdapter.ON_PROPERTY)
-        self.cache["some_values_from"] = self.cache_predicate(
-            CompoundAdapter.SOME_VALUES_FROM
-        )
-        self.cache["all_values_from"] = self.cache_predicate(
-            CompoundAdapter.ALL_VALUES_FROM
-        )
 
     def cache_node_properties(self):
         self.cache["term_names"] = self.cache_predicate(CompoundAdapter.LABEL)
@@ -369,11 +208,3 @@ class CompoundAdapter:
 
     def cache_predicate(self, predicate):
         return list(self.graph.subject_objects(predicate=predicate))
-
-    def get_all_property_values_from_node(self, node, collection):
-        values = []
-        for subject_object in self.cache[collection]:
-            subject, object = subject_object
-            if subject == node:
-                values.append(str(object))
-        return values
