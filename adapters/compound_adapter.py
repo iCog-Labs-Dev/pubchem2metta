@@ -57,9 +57,11 @@ class CompoundAdapter(Adapter):
 
     def __getValue(self, id):
         url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{id}/JSON"
+        print("inside get value")
         # logger.info(f"Loading {id} from {url}")
         try:
             response = requests.get(url)
+            print(response.status_code)
             if response.status_code == 200:
                 data = response.json()
                 return data
@@ -102,9 +104,8 @@ class CompoundAdapter(Adapter):
                 # if str(node) == "http://anonymous" or "@prefix":
                 #     continue
                 term_id = CompoundAdapter.to_key(node)
-                data = self.__getValue(term_id)
+                data = self.__getValue(term_id[3:])
                 # logger.info(f"Node: {node} with term id {term_id}")
-
                 props = {}
                 if data is None:
                     continue
