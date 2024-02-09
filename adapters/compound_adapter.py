@@ -48,7 +48,7 @@ class CompoundAdapter(Adapter):
             logger.error(f"Input file {filepath} doesn't exist")
             raise FileNotFoundError(f"Input file {filepath} doesn't exist")
 
-        # To convert the file path to format tollerable suitable for the owlready
+        # To convert the file path to format tolerable suitable for the owlready
         filepath = os.path.realpath(filepath)
 
         self.dry_run = dry_run
