@@ -57,11 +57,9 @@ class CompoundAdapter(Adapter):
 
     def __getValue(self, id):
         url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{id}/JSON"
-        print("inside get value")
         # logger.info(f"Loading {id} from {url}")
         try:
             response = requests.get(url)
-            print(response.status_code)
             if response.status_code == 200:
                 data = response.json()
                 return data
