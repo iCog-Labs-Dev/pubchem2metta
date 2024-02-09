@@ -10,33 +10,13 @@ import requests
 class CompoundAdapter(Adapter):
     OUTPUT_PATH = "./parsed-data"
 
-    ONTOLOGIES = {
-        # "pubchem": "file:///home/wendecoder/Downloads/pc_compound2descriptor.owl",
-    }
+    SOURCE_URL = "https://pubchem.ncbi.nlm.nih.gov/rest/rdf/compound/"
+    SOURCE = "pubchem"
+    VERSION = "1.0"
 
     HAS_ATTRIBUTE = rdflib.term.URIRef("http://semanticscience.org/resource/SIO_000008")
-    HAS_PARENT = rdflib.term.URIRef(
-        "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#has_parent"
-    )
-    HAS_COMPONENT = rdflib.term.URIRef(
-        "http://semanticscience.org/resource/CHEMINF_000480"
-    )
-    HAS_STEREOISOMER = rdflib.term.URIRef(
-        "http://semanticscience.org/resource/CHEMINF_000461"
-    )
-    HAS_ISOTOPOLOGUE = rdflib.term.URIRef(
-        "http://semanticscience.org/resource/CHEMINF_000455"
-    )
-    HAS_SAME_CONNECTIVITY_WITH = rdflib.term.URIRef(
-        "http://semanticscience.org/resource/CHEMINF_000462"
-    )
-    TYPE = rdflib.term.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-    LABEL = rdflib.term.URIRef("http://www.w3.org/2000/01/rdf-schema#label")
-    RESTRICTION = rdflib.term.URIRef("http://www.w3.org/2002/07/owl#Restriction")
-    DESCRIPTION = rdflib.term.URIRef("http://purl.org/dc/terms/description")
-    SUBCLASS = rdflib.term.URIRef("http://www.w3.org/2000/01/rdf-schema#subClassOf")
 
-    PREDICATES = [SUBCLASS, HAS_PARENT, HAS_ISOTOPOLOGUE, HAS_STEREOISOMER]
+    COMPOUNDS = {}
 
     def __init__(self, filepath=None, label="compound", dry_run=False):
         self.label = label
@@ -52,11 +32,11 @@ class CompoundAdapter(Adapter):
         filepath = os.path.realpath(filepath)
 
         self.dry_run = dry_run
-        CompoundAdapter.ONTOLOGIES[label] = f"file://{filepath}"
+        CompoundAdapter.COMPOUNDS[label] = f"file://{filepath}"
         self.file_path = filepath
 
     def __getValue(self, id):
-        url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{id}/JSON"
+        url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{id}/description/JSON"
         # logger.info(f"Loading {id} from {url}")
         try:
             response = requests.get(url)
@@ -71,15 +51,15 @@ class CompoundAdapter(Adapter):
             return None
 
     def __get_graph(self, ontology):
-        onto = get_ontology(CompoundAdapter.ONTOLOGIES[ontology]).load()
+        onto = get_ontology(CompoundAdapter.COMPOUNDS[ontology]).load()
         self.graph = default_world.as_rdflib_graph()
-        self.clear_cache()
+        self.__clear_cache()
         return self.graph
 
     def get_nodes(self):
-        for ontology in CompoundAdapter.ONTOLOGIES.keys():
+        for ontology in CompoundAdapter.COMPOUNDS.keys():
             self.graph = self.__get_graph(ontology)
-            self.cache_node_properties()
+            self.__cache_node_properties()
             subject_objects = list(self.graph.subject_objects())
 
             nodes_dict = {}
@@ -108,58 +88,17 @@ class CompoundAdapter(Adapter):
                 if data is None:
                     continue
 
-                if "PC_Compounds" in data:
-                    compound_info = data["PC_Compounds"][0]
-                    excluded_properties = [
-                        "SubStructure_Keys_Fingerprint",
-                        "Allowed_IUPAC_Name",
-                        "CAS-like_Style_IUPAC_Name",
-                        "Markup_IUPAC_Name",
-                        "Systematic_IUPAC_Name",
-                        "Traditional_IUPAC_Name",
-                        "Canonicalized_Compound",
-                    ]
-                    for property in compound_info.get("props", []):
-                        prop_name = (
-                            f"{property['urn']['name']}_{property['urn']['label']}"
-                            if "urn" in property and "name" in property["urn"]
-                            else property["urn"]["label"]
-                        )
-                        prop_name = prop_name.replace(" ", "_")
-                        if prop_name in excluded_properties:
-                            continue
-                        if prop_name == "MonoIsotopic_Weight":
-                            prop_name = "Mono_Isotopic_Weight"
-                        if prop_name == "Polar_Surface_Area_Topological":
-                            prop_name = "TPSA"
-                        value_key = next(
-                            (
-                                key
-                                for key in ["sval", "ival", "binary", "fval"]
-                                if key in property["value"]
-                            ),
-                            None,
-                        )
-                        prop_value = property["value"][value_key]
-                        props[prop_name] = prop_value
+                if data.get("InformationList"):
+                    compound_information = data.get("InformationList").get(
+                        "Information"
+                    )[0]
+                    name = compound_information.get("Title")
+                    props["id"] = term_id
+                    props["name"] = name
+                    props["source"] = CompoundAdapter.SOURCE
+                    props["version"] = CompoundAdapter.VERSION
+                    props["source_url"] = CompoundAdapter.SOURCE_URL
 
-                    for key, count in compound_info.get("count", []).items():
-                        if key == "heavy_atom":
-                            props["Non-hydrogen_Atom_Count"] = count
-                        if key == "atom_chiral_def":
-                            props["Defined_Atom_Stereo_Count"] = count
-                        if key == "atom_chiral_undef":
-                            props["Undefined_Atom_Stereo_Count"] = count
-                        if key == "bond_chiral_def":
-                            props["Defined_Bond_Stereo_Count"] = count
-                        if key == "bond_chiral_undef":
-                            props["Undefined_Bond_Stereo_Count"] = count
-                        if key == "covalent_unit":
-                            props["Covalent_Unit_Count"] = count
-                        if key == "isotope_atom":
-                            props["Isotope_Atom_Count"] = count
-
-                    props["Total_Formal_Charge"] = compound_info.get("charge", "")
                 i += 1
                 yield term_id, self.label, props
 
@@ -191,20 +130,72 @@ class CompoundAdapter(Adapter):
             return ""
 
     # it's faster to load all subject/objects beforehand
-    def clear_cache(self):
+    def __clear_cache(self):
         self.cache = {}
 
-    def cache_node_properties(self):
-        self.cache["term_names"] = self.cache_predicate(CompoundAdapter.LABEL)
-        self.cache["descriptions"] = self.cache_predicate(CompoundAdapter.DESCRIPTION)
-        self.cache["attributes"] = self.cache_predicate(CompoundAdapter.HAS_ATTRIBUTE)
-        self.cache["has_parent"] = self.cache_predicate(CompoundAdapter.HAS_PARENT)
-        self.cache["has_component"] = self.cache_predicate(
-            CompoundAdapter.HAS_COMPONENT
-        )
-        self.cache["has_same_connectivity_with"] = self.cache_predicate(
-            CompoundAdapter.HAS_SAME_CONNECTIVITY_WITH
-        )
+    def __cache_node_properties(self):
+        self.cache["attributes"] = self.__cache_predicate(CompoundAdapter.HAS_ATTRIBUTE)
+        # self.cache["term_names"] = self.cache_predicate(CompoundAdapter.LABEL)
+        # self.cache["descriptions"] = self.cache_predicate(CompoundAdapter.DESCRIPTION)
+        # self.cache["has_component"] = self.cache_predicate(
+        #     CompoundAdapter.HAS_COMPONENT
+        # )
+        # self.cache["has_same_connectivity_with"] = self.cache_predicate(
+        #     CompoundAdapter.HAS_SAME_CONNECTIVITY_WITH
+        # )
 
-    def cache_predicate(self, predicate):
+    def __cache_predicate(self, predicate):
         return list(self.graph.subject_objects(predicate=predicate))
+
+        # if "PC_Compounds" in data:
+        #     compound_info = data["PC_Compounds"][0]
+        #     excluded_properties = [
+        #         "SubStructure_Keys_Fingerprint",
+        #         "Allowed_IUPAC_Name",
+        #         "CAS-like_Style_IUPAC_Name",
+        #         "Markup_IUPAC_Name",
+        #         "Systematic_IUPAC_Name",
+        #         "Traditional_IUPAC_Name",
+        #         "Canonicalized_Compound",
+        #     ]
+        #     for property in compound_info.get("props", []):
+        #         prop_name = (
+        #             f"{property['urn']['name']}_{property['urn']['label']}"
+        #             if "urn" in property and "name" in property["urn"]
+        #             else property["urn"]["label"]
+        #         )
+        #         prop_name = prop_name.replace(" ", "_")
+        #         if prop_name in excluded_properties:
+        #             continue
+        #         if prop_name == "MonoIsotopic_Weight":
+        #             prop_name = "Mono_Isotopic_Weight"
+        #         if prop_name == "Polar_Surface_Area_Topological":
+        #             prop_name = "TPSA"
+        #         value_key = next(
+        #             (
+        #                 key
+        #                 for key in ["sval", "ival", "binary", "fval"]
+        #                 if key in property["value"]
+        #             ),
+        #             None,
+        #         )
+        #         prop_value = property["value"][value_key]
+        #         props[prop_name] = prop_value
+
+        #     for key, count in compound_info.get("count", []).items():
+        #         if key == "heavy_atom":
+        #             props["Non-hydrogen_Atom_Count"] = count
+        #         if key == "atom_chiral_def":
+        #             props["Defined_Atom_Stereo_Count"] = count
+        #         if key == "atom_chiral_undef":
+        #             props["Undefined_Atom_Stereo_Count"] = count
+        #         if key == "bond_chiral_def":
+        #             props["Defined_Bond_Stereo_Count"] = count
+        #         if key == "bond_chiral_undef":
+        #             props["Undefined_Bond_Stereo_Count"] = count
+        #         if key == "covalent_unit":
+        #             props["Covalent_Unit_Count"] = count
+        #         if key == "isotope_atom":
+        #             props["Isotope_Atom_Count"] = count
+
+        #     props["Total_Formal_Charge"] = compound_info.get("charge", "")
