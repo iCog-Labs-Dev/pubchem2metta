@@ -1,10 +1,164 @@
 Title: BioCypher graph schema configuration file
+
 # ---
 # "Named Things"
 # ---
 
-compound complexity:
+compound:
   represented_as: node
-  input_label: compound_complexity
+  is_a: molecular entity  
+  # preferred_id: pubchem
+  input_label: compound
   properties:
-    complexity_value: float
+    id: str
+    name: str
+    source: str
+    version: str
+    source_url: str
+
+# *** List of descriptors ***
+  # compound_complexity: int
+  # hydrogen_bond_acceptor_count: int
+  # hydrogen_bond_donor_count: int
+  # rotatable_bond_count: int
+  # preferred_iupac_name: str
+  # standard_inchi: str
+  # standard_inchikey: str
+  # xlogp3-aa_log_p: float
+  # exact_mass: float
+  # molecular_formula: str
+  # molecular_weight: float
+  # canonical_smiles: str
+  # isomeric_smiles: str
+  # tpsa: float
+  # mono_isotopic_weight: float
+  # non-hydrogen_atom_count: int
+  # defined_atom_stereo_count: int
+  # undefined_atom_stereo_count: int
+  # defined_bond_stereo_count: int
+  # undefined_bond_stereo_count: int
+  # isotope_atom_count: int
+  # covalent_unit_count: int
+  # total_formal_charge: int
+
+descriptor:
+  represented_as: node
+  is_a: attribute
+  # preferred_id: pubchem
+  input_label: descriptor
+  properties:
+    id: str
+    name: str
+    unit: str
+    source: str
+    version: str
+    source_url: str
+
+# ---
+# Associations
+# ---
+
+has property:
+  represented_as: edge
+  is_a: has attribute
+  input_label: has_property
+  source: compound
+  target: descriptor
+  properties:
+    source: str
+    version: str
+    source_url: str
+  description: >-
+    is a relation that associates a compound with an attribute where an attribute is an intrinsic characteristic such as a quality, capability, disposition, function, or is an externally derived attribute determined from some descriptor
+  exact_mappings:
+    - SIO:000008
+
+has component:
+  represented_as: edge
+  is_a: has part
+  input_label: has_component
+  source: compound
+  target: compound
+  properties:
+    source: str
+    version: str
+    source_url: str
+  description: >-
+    Connects a molecular substance, say a mixture containing ions, with a neutral form of one of the ions
+  exact_mappings:
+    - CHEMINF:000480
+
+has parent:
+  represented_as: edge
+  is_a: part of
+  input_label: has_parent
+  source: compound
+  target: compound
+  properties:
+    source: str
+    version: str
+    source_url: str
+  # description: >-
+  #   Is a compoenet of a molecular substance
+  exact_mappings:
+    - vocab:has_parent
+
+is isotopologue of:
+  represented_as: edge
+  is_a: has same connectivity as
+  input_label: is_isotopologue_of
+  source: compound
+  target: compound
+  properties:
+    source: str
+    version: str
+    source_url: str
+  description: >-
+    An isotopologue is a molecular entity that differs only in isotopic composition from another molecular entity
+  exact_mappings:
+    - CHEMINF:000455
+
+is stereoisomer of:
+  represented_as: edge
+  is_a: has same connectivity as
+  input_label: is_stereoisomer_of
+  source: compound
+  target: compound
+  properties:
+    source: str
+    version: str
+    source_url: str
+  description: >-
+    Connects a molecule to an isomer with identical constitution but differing in its arrangement of atoms in space
+  exact_mappings:
+    - CHEMINF:000461
+
+has same connectivity as:
+  represented_as: edge
+  is_a: related to at instance level
+  input_label: has_same_connectivity_as
+  source: compound
+  target: compound
+  properties:
+    source: str
+    version: str
+    source_url: str
+  description: >-
+    Connects a molecule to an isomer with identical constitution
+  exact_mappings:
+    - CHEMINF:000462
+
+has pubchem normalized counterpart:
+  represented_as: edge
+  is_a: related to at instance level
+  input_label: has_pubchem_normalized_counterpart
+  source: compound
+  target: compound
+  properties:
+    source: str
+    version: str
+    source_url: str
+  description: >-
+    Connects a molecule to its normalized counterpart according to the PubChem specification
+  exact_mappings:
+    - CHEMINF:000477
