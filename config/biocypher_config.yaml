@@ -5,8 +5,21 @@ biocypher:
   debug: false
   schema_config_path: config/schema_config.yaml
 
-neo4j:
-  delimiter: '\t'
-  array_delimiter: '|'
-  skip_duplicate_nodes: true
-  skip_bad_relationships: true
+  # Ontology configuration
+  head_ontology:
+    url: https://github.com/biolink/biolink-model/raw/v3.2.1/biolink-model.owl.ttl
+    root_node: entity
+
+  tail_ontologies:
+
+    cheminf:
+      url: http://purl.obolibrary.org/obo/cheminf.owl
+      head_join_node: related to at instance level 
+      tail_join_node: has same connectivity as
+      merge_nodes: false
+    
+    cheminf_pubchem:
+      url: http://purl.obolibrary.org/obo/cheminf.owl
+      head_join_node: related to at instance level 
+      tail_join_node: has pubchem normalized counterpart
+      merge_nodes: false
