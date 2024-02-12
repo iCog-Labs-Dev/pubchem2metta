@@ -75,7 +75,11 @@ class DescriptorAdapter(Adapter):
         # self.file_path = filepath
 
     def get_nodes(self):
-        for descriptor in DescriptorAdapter.DESCRIPTORS.keys():
+        for descriptor in tqdm(
+            DescriptorAdapter.DESCRIPTORS.keys(),
+            desc="Loading descriptors",
+            unit="descriptor",
+        ):
 
             entries = DescriptorAdapter.DESCRIPTORS.get(descriptor)
             nodes_dict = {}
@@ -88,30 +92,25 @@ class DescriptorAdapter(Adapter):
             nodes = nodes_dict.keys()
 
             i = 0
-            for node in tqdm(nodes, desc="Loading descriptors", unit="descriptor"):
+            term_id = descriptor
+            data = entries
+            # logger.info(f"Node: {node} with term id {term_id}")
+            props = {}
+            if data is None:
+                continue
 
-                # avoiding blank nodes and other arbitrary node types
-                if not isinstance(node, rdflib.term.URIRef):
-                    continue
-                # if str(node) == "http://anonymous" or "@prefix":
-                #     continue
-                term_id = descriptor
-                data = entries
-                # logger.info(f"Node: {node} with term id {term_id}")
-                props = {}
-                if data is None:
-                    continue
+            if data.get("source_url"):
+                source_url = data.get("source_url")
+                props["source_url"] = source_url
 
-                if data.get("source_url"):
-                    source_url = data.get("source_url")
-                    props["source_url"] = source_url
-                if data.get("unit"):
-                    unit = data.get("unit")
-                    props["unit"] = unit
+            if data.get("unit"):
+                unit = data.get("unit")
+                props["unit"] = unit
 
-                props["id"] = term_id
-                props["source"] = DescriptorAdapter.SOURCE
-                props["version"] = DescriptorAdapter.VERSION
+            props["id"] = term_id
+            props["source"] = DescriptorAdapter.SOURCE
+            props["version"] = DescriptorAdapter.VERSION
 
-                i += 1
-                yield term_id, self.node_label, props
+            i += 1
+
+            yield term_id, self.label, props
