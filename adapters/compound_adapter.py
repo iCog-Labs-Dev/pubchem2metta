@@ -17,6 +17,9 @@ class CompoundAdapter(Adapter):
     HAS_ATTRIBUTE = rdflib.term.URIRef("http://semanticscience.org/resource/SIO_000008")
 
     COMPOUNDS = {}
+    # ALLOWED_DESCRIPTORS = {
+    #     "MolecularFormula":
+    # }
 
     def __init__(
         self,
@@ -42,8 +45,7 @@ class CompoundAdapter(Adapter):
         CompoundAdapter.COMPOUNDS[label] = f"file://{filepath}"
         self.file_path = filepath
 
-    def __getValue(self, id):
-        url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{id}/description/JSON"
+    def __getValue(self, url):
         # logger.info(f"Loading {id} from {url}")
         try:
             response = requests.get(url)
@@ -87,7 +89,8 @@ class CompoundAdapter(Adapter):
                 # if str(node) == "http://anonymous" or "@prefix":
                 #     continue
                 term_id = CompoundAdapter.to_key(node)
-                data = self.__getValue(term_id[3:])
+                source_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{term_id[3:]}/description/JSON"
+                data = self.__getValue(source_url)
                 # logger.info(f"Node: {node} with term id {term_id}")
                 props = {}
                 if data is None:
@@ -119,11 +122,11 @@ class CompoundAdapter(Adapter):
                 nodes_dict[subject] = object
 
             nodes = nodes_dict.keys()
-            nodes = list(nodes)[:100] if self.dry_run else nodes
+            nodes = list(nodes)[:10] if self.dry_run else nodes
 
             i = 0  # dry run is set to true just output the first 100 nodes
             for node in tqdm(nodes, desc="Loading properties", unit="property"):
-                if i > 100 and self.dry_run:
+                if i > 10 and self.dry_run:
                     break
 
                 # avoiding blank nodes and other arbitrary node types
@@ -131,9 +134,10 @@ class CompoundAdapter(Adapter):
                     continue
                 # if str(node) == "http://anonymous" or "@prefix":
                 #     continue
-                term_id = CompoundAdapter.to_key(node)
-                data = self.__getValue(term_id[3:])
-                # logger.info(f"Node: {node} with term id {term_id}")
+                source_id = CompoundAdapter.to_key(node)
+                source_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{source_id[3:]}/JSON"
+                data = self.__getValue(source_url)
+                # logger.info(f"Node: {node} with term id {source_id}")
                 props = {}
                 if data is None:
                     continue
@@ -197,7 +201,7 @@ class CompoundAdapter(Adapter):
                     props["Total_Formal_Charge"] = compound_info.get("charge", "")
 
                 i += 1
-                yield term_id, self.edge_label, props
+                yield "", source_id, "", self.edge_label, props
 
     @classmethod
     def to_key(cls, node_uri):
