@@ -18,6 +18,7 @@ class DescriptorAdapter(Adapter):
         "http://semanticscience.org/resource/SIO_000008"
     )
     SQUARE_ANGSTROM = rdflib.term.URIRef("http://purl.obolibrary.org/obo/UO_0000324")
+
     # Key value pair of descriptors and their corresponding properties
     DESCRIPTORS = {
         "Mono_Isotopic_Weight": {
@@ -94,6 +95,7 @@ class DescriptorAdapter(Adapter):
             i = 0
             term_id = descriptor
             data = entries
+
             # logger.info(f"Node: {node} with term id {term_id}")
             props = {}
             if data is None:
