@@ -25,7 +25,7 @@ class CompoundAdapter(Adapter):
         self,
         filepath=None,
         node_label="compound",
-        edge_label="has_property",
+        edge_label="has-property",
         dry_run=False,
     ):
         self.node_label = node_label
@@ -138,7 +138,6 @@ class CompoundAdapter(Adapter):
                 source_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{source_id[3:]}/JSON"
                 data = self.__getValue(source_url)
                 # logger.info(f"Node: {node} with term id {source_id}")
-                props = {}
                 if data is None:
                     continue
 
@@ -146,12 +145,12 @@ class CompoundAdapter(Adapter):
                     compound_info = data["PC_Compounds"][0]
 
                     for property in compound_info.get("props", []):
-                        prop_name = (
+                        target_id = (
                             f"{property['urn']['name']}_{property['urn']['label']}"
                             if "urn" in property and "name" in property["urn"]
                             else property["urn"]["label"]
                         )
-                        prop_name = prop_name.replace(" ", "_")
+                        target_id = target_id.replace(" ", "_")
 
                         excluded_properties = [
                             "SubStructure_Keys_Fingerprint",
@@ -162,14 +161,14 @@ class CompoundAdapter(Adapter):
                             "Traditional_IUPAC_Name",
                             "Canonicalized_Compound",
                         ]
-                        if prop_name in excluded_properties:
+                        if target_id in excluded_properties:
                             continue
 
                         # Changed to snake case
-                        if prop_name == "MonoIsotopic_Weight":
-                            prop_name = "Mono_Isotopic_Weight"
-                        if prop_name == "Polar_Surface_Area_Topological":
-                            prop_name = "TPSA"
+                        if target_id == "MonoIsotopic_Weight":
+                            target_id = "Mono_Isotopic_Weight"
+                        if target_id == "Polar_Surface_Area_Topological":
+                            target_id = "TPSA"
 
                         value_key = next(
                             (
@@ -180,28 +179,37 @@ class CompoundAdapter(Adapter):
                             None,
                         )
                         prop_value = property["value"][value_key]
-                        props[prop_name] = prop_value
+
+                        yield "", source_id, target_id, self.edge_label, {
+                            "value": prop_value
+                        }
 
                     for key, count in compound_info.get("count", []).items():
+                        target_id = ""
                         if key == "heavy_atom":
-                            props["Non-hydrogen_Atom_Count"] = count
+                            target_id = "Non-hydrogen_Atom_Count"
                         if key == "atom_chiral_def":
-                            props["Defined_Atom_Stereo_Count"] = count
+                            target_id = "Defined_Atom_Stereo_Count"
                         if key == "atom_chiral_undef":
-                            props["Undefined_Atom_Stereo_Count"] = count
+                            target_id = "Undefined_Atom_Stereo_Count"
                         if key == "bond_chiral_def":
-                            props["Defined_Bond_Stereo_Count"] = count
+                            target_id = "Defined_Bond_Stereo_Count"
                         if key == "bond_chiral_undef":
-                            props["Undefined_Bond_Stereo_Count"] = count
+                            target_id = "Undefined_Bond_Stereo_Count"
                         if key == "covalent_unit":
-                            props["Covalent_Unit_Count"] = count
+                            target_id = "Covalent_Unit_Count"
                         if key == "isotope_atom":
-                            props["Isotope_Atom_Count"] = count
+                            target_id = "Isotope_Atom_Count"
 
-                    props["Total_Formal_Charge"] = compound_info.get("charge", "")
+                        yield "", source_id, target_id, self.edge_label, {
+                            "value": count
+                        }
+
+                    target_id = "Total_Formal_Charge"
+                    value = compound_info.get("charge", "")
+                    yield "", source_id, target_id, self.edge_label, {"value": value}
 
                 i += 1
-                yield "", source_id, "", self.edge_label, props
 
     @classmethod
     def to_key(cls, node_uri):
