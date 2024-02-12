@@ -67,7 +67,7 @@ class DescriptorAdapter(Adapter):
         if filepath:
             raise Error("File input not implemented")
 
-        if not os.path.exists(filepath):
+        if filepath and not os.path.exists(filepath):
             logger.error(f"Input file {filepath} doesn't exist")
             raise FileNotFoundError(f"Input file {filepath} doesn't exist")
 
@@ -75,25 +75,20 @@ class DescriptorAdapter(Adapter):
         # self.file_path = filepath
 
     def get_nodes(self):
-        if DescriptorAdapter.RUN_ONCE:
-            return
-
         for descriptor in DescriptorAdapter.DESCRIPTORS.keys():
 
             entries = DescriptorAdapter.DESCRIPTORS.get(descriptor)
             nodes_dict = {}
+            if not entries:
+                continue
 
-            for entry in entries:
-                subject, object = entry
-                nodes_dict[subject] = object
+            for k, v in entries.items():
+                nodes_dict[k] = v
 
             nodes = nodes_dict.keys()
-            nodes = list(nodes)[:100] if self.dry_run else nodes
 
-            i = 0  # dry run is set to true just output the first 100 nodes
+            i = 0
             for node in tqdm(nodes, desc="Loading descriptors", unit="descriptor"):
-                if self.dry_run:
-                    break
 
                 # avoiding blank nodes and other arbitrary node types
                 if not isinstance(node, rdflib.term.URIRef):
