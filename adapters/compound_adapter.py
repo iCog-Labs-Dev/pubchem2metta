@@ -14,12 +14,20 @@ class CompoundAdapter(Adapter):
     SOURCE = "pubchem"
     VERSION = "1.0"
 
+    DRY_RUN = 10
+
     HAS_ATTRIBUTE = rdflib.term.URIRef("http://semanticscience.org/resource/SIO_000008")
 
     COMPOUNDS = {}
-    # ALLOWED_DESCRIPTORS = {
-    #     "MolecularFormula":
-    # }
+    EXCLUDED_PROPERTIES = [
+        "SubStructure_Keys_Fingerprint",
+        "Allowed_IUPAC_Name",
+        "CAS-like_Style_IUPAC_Name",
+        "Markup_IUPAC_Name",
+        "Systematic_IUPAC_Name",
+        "Traditional_IUPAC_Name",
+        "Canonicalized_Compound",
+    ]
 
     def __init__(
         self,
@@ -60,7 +68,7 @@ class CompoundAdapter(Adapter):
             return None
 
     def __get_graph(self, ontology):
-        onto = get_ontology(CompoundAdapter.COMPOUNDS[ontology]).load()
+        get_ontology(CompoundAdapter.COMPOUNDS[ontology]).load()
         self.graph = default_world.as_rdflib_graph()
         return self.graph
 
@@ -76,18 +84,17 @@ class CompoundAdapter(Adapter):
                 nodes_dict[subject] = object
 
             nodes = nodes_dict.keys()
-            nodes = list(nodes)[:100] if self.dry_run else nodes
+            nodes = list(nodes)[: CompoundAdapter.DRY_RUN] if self.dry_run else nodes
 
-            i = 0  # dry run is set to true just output the first 100 nodes
+            i = 0  # dry run is set to true just output the first nodes until DRY_RUN constant
             for node in tqdm(nodes, desc="Loading compounds", unit="compound"):
-                if i > 100 and self.dry_run:
+                if i > CompoundAdapter.DRY_RUN and self.dry_run:
                     break
 
                 # avoiding blank nodes and other arbitrary node types
                 if not isinstance(node, rdflib.term.URIRef):
                     continue
-                # if str(node) == "http://anonymous" or "@prefix":
-                #     continue
+
                 term_id = CompoundAdapter.to_key(node)
                 source_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{term_id[3:]}/description/JSON"
                 data = self.__getValue(source_url)
@@ -122,18 +129,17 @@ class CompoundAdapter(Adapter):
                 nodes_dict[subject] = object
 
             nodes = nodes_dict.keys()
-            nodes = list(nodes)[:10] if self.dry_run else nodes
+            nodes = list(nodes)[: CompoundAdapter.DRY_RUN] if self.dry_run else nodes
 
-            i = 0  # dry run is set to true just output the first 100 nodes
+            i = 0  # dry run is set to true just output the first nodes until DRY_RUN constant
             for node in tqdm(nodes, desc="Loading properties", unit="property"):
-                if i > 10 and self.dry_run:
+                if i > CompoundAdapter.DRY_RUN and self.dry_run:
                     break
 
                 # avoiding blank nodes and other arbitrary node types
                 if not isinstance(node, rdflib.term.URIRef):
                     continue
-                # if str(node) == "http://anonymous" or "@prefix":
-                #     continue
+
                 source_id = CompoundAdapter.to_key(node)
                 source_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{source_id[3:]}/JSON"
                 data = self.__getValue(source_url)
@@ -145,6 +151,8 @@ class CompoundAdapter(Adapter):
                     compound_info = data["PC_Compounds"][0]
 
                     for property in compound_info.get("props", []):
+
+                        # The name of the descriptor is treated as target_id since the descriptors are unique.
                         target_id = (
                             f"{property['urn']['name']}_{property['urn']['label']}"
                             if "urn" in property and "name" in property["urn"]
@@ -152,16 +160,7 @@ class CompoundAdapter(Adapter):
                         )
                         target_id = target_id.replace(" ", "_")
 
-                        excluded_properties = [
-                            "SubStructure_Keys_Fingerprint",
-                            "Allowed_IUPAC_Name",
-                            "CAS-like_Style_IUPAC_Name",
-                            "Markup_IUPAC_Name",
-                            "Systematic_IUPAC_Name",
-                            "Traditional_IUPAC_Name",
-                            "Canonicalized_Compound",
-                        ]
-                        if target_id in excluded_properties:
+                        if target_id in CompoundAdapter.EXCLUDED_PROPERTIES:
                             continue
 
                         # Changed to snake case
@@ -178,14 +177,14 @@ class CompoundAdapter(Adapter):
                             ),
                             None,
                         )
-                        prop_value = property["value"][value_key]
+                        value = property["value"][value_key]
 
-                        yield "", source_id, target_id, self.edge_label, {
-                            "value": prop_value
-                        }
+                        yield "", source_id, target_id, self.edge_label, {value}
 
                     for key, count in compound_info.get("count", []).items():
                         target_id = ""
+
+                        # For manual renaming of some descriptors
                         if key == "heavy_atom":
                             target_id = "Non-hydrogen_Atom_Count"
                         if key == "atom_chiral_def":
@@ -207,7 +206,7 @@ class CompoundAdapter(Adapter):
 
                     target_id = "Total_Formal_Charge"
                     value = compound_info.get("charge", "")
-                    yield "", source_id, target_id, self.edge_label, {"value": value}
+                    yield "", source_id, target_id, self.edge_label, {value}
 
                 i += 1
 
@@ -224,16 +223,3 @@ class CompoundAdapter(Adapter):
             key = "{}_{}".format("number", key)
 
         return key
-
-    @classmethod
-    def extract_id(cls, id):
-        try:
-            match = re.search(r"\d{2,}", id)
-            if match:
-                return match.group()
-            else:
-                return ""
-
-        except Exception as e:
-            logger.error(f"{e}")
-            return ""
