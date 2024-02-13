@@ -57,9 +57,7 @@ ADAPTERS = {
     "isotopologue": {
         "adapter": IsotopologueAdapter(
             # url="https://ftp.ncbi.nlm.nih.gov/pubchem/RDF/compound/general/pc_compound2isotopologue.ttl.gz",
-            filepath="./samples/pc_compound2isotopologue.ttl.gz",
-            type="is isotopologue of",
-            label="is_isotopologue_of",
+            filepath="./samples/pc_compound2isotopologue.ttl.gz", dry_run=False
         ),
         "outdir": "isotopologue",
         "nodes": False,
@@ -67,9 +65,7 @@ ADAPTERS = {
     },
     "stereoisomer": {
         "adapter": StereoisomerAdapter(
-            filepath="./samples/pc_compound2stereoisomer_000001.ttl.gz",
-            type="is stereoisomer of",
-            label="is_stereoisomer_of",
+            filepath="./samples/pc_compound2stereoisomer_000001.ttl.gz", dry_run=False
         ),
         "outdir": "stereoisomer",
         "nodes": False,

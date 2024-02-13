@@ -6,16 +6,9 @@ from biocypher._logger import logger
 
 class StereoisomerAdapter(Adapter):
 
-    ALLOWED_TYPES = ['is stereoisomer of']
-    ALLOWED_LABELS = ['is_stereoisomer_of']
+    DRY_RUN = 100
 
-    def __init__(self, filepath, type, label):
-        if type not in StereoisomerAdapter.ALLOWED_TYPES:
-            logger.error(f"Invalid type. Allowed values: {str(StereoisomerAdapter.ALLOWED_TYPES)}")
-            raise ValueError(f"Invalid type. Allowed values: {str(StereoisomerAdapter.ALLOWED_TYPES)}")
-        if label not in StereoisomerAdapter.ALLOWED_LABELS:
-            logger.error(f"Invalid label. Allowed values: {str(StereoisomerAdapter.ALLOWED_LABELS)}")
-            raise ValueError(f"Invalid label. Allowed values: {str(StereoisomerAdapter.ALLOWED_LABELS)}")
+    def __init__(self, filepath, label='is_stereoisomer_of', dry_run=False):
         if not filepath:
             logger.error("Input file not specified")
             raise ValueError("Input file not specified")
@@ -25,8 +18,8 @@ class StereoisomerAdapter(Adapter):
 
         self.filepath = filepath
         self.dataset = label
-        self.type = type
         self.label = label
+        self.dry_run = dry_run
         self.source = "PubChem"
         self.source_url = "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/"
         self.version = "1.0"
@@ -38,7 +31,11 @@ class StereoisomerAdapter(Adapter):
         with gzip.open(self.filepath, 'rb') as f:
             g.parse(f, format='turtle')
 
+        i = 0
         for subj, pred, obj in tqdm(g, desc="Running adapter: is_stereoisomer_of", unit="compound"):
+            if i > StereoisomerAdapter.DRY_RUN and self.dry_run:
+                break
+
             subject_id = subj.split('/')[-1]
             object_id = obj.split('/')[-1]
 
@@ -50,5 +47,7 @@ class StereoisomerAdapter(Adapter):
                 'source_url': self.source_url,
                 'version': self.version
             }
+
+            i += 1
             yield(_id, _source, _target, self.label, _props)
 
