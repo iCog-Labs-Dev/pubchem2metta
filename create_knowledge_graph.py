@@ -29,15 +29,6 @@ ADAPTERS = {
     #     "nodes": False,
     #     "edges": True
     # },
-    "hasSameConnectivityAs": {
-        "adapter": HasSameConnectivityAsEdge(
-            filepath="samples/pc_compound2sameconnectivity.xml", dry_run=False
-        ),
-
-        "outdir": "compound_complexity",
-        "nodes": True,
-        "edges": False,
-    },
 
     "isotopologue": {
         "adapter": IsotopologueAdapter(
@@ -58,8 +49,12 @@ ADAPTERS = {
         "outdir": "stereoisomer",
         "nodes": False,
         "edges": True,
-    }
+    },
 
+    "hasSameConnectivityAs": {
+        "adapter": HasSameConnectivityAsEdge(
+            filepath="samples/pc_compound2sameconnectivity.xml", dry_run=False
+        ),
         "outdir": "compound2sameconnectivity",
         "nodes": False,
         "edges": True
