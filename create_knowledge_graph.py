@@ -1,6 +1,9 @@
 """
 Knowledge graph generation through BioCypher script
 """
+
+from adapters.descriptor_adapter import DescriptorAdapter
+from adapters.has_parent_adapter import HasParentAdapter
 from adapters.has_same_connectivity_adapter import HasSameConnectivityAsEdge
 from metta_writer import *
 from biocypher._logger import logger
@@ -13,53 +16,65 @@ from adapters.has_component_adapter import HasComponentEdge
 
 
 ADAPTERS = {
-    # "compound": {
-    #     "adapter": CompoundAdapter(
-    #         filepath="samples/pc_compound2descriptor_000001_chunk_1.xml", dry_run=True
-    #     ),
-    #     "outdir": "compound_complexity",
-    #     "nodes": True,
-    #     "edges": False,
-    # },
-    # "compound2component": {
-    #     "adapter": HasComponentEdge(
-    #         filepath="samples/pc_compound2component.xml", dry_run=False
-    #     ),
-    #     "outdir": "compound2component",
-    #     "nodes": False,
-    #     "edges": True
-    # },
-
+    "compound": {
+        "adapter": CompoundAdapter(
+            filepath="samples/pc_compound2descriptor_000001_chunk_1.xml", dry_run=True
+        ),
+        "outdir": "compound_complexity",
+        "nodes": True,
+        "edges": False,
+    },
+    "descriptor": {
+        "adapter": DescriptorAdapter(),
+        "outdir": "descriptors",
+        "nodes": True,
+        "edges": False,
+    },
+    "compound2component": {
+        "adapter": HasComponentEdge(
+            filepath="samples/pc_compound2component.xml", dry_run=False
+        ),
+        "outdir": "compound2component",
+        "nodes": False,
+        "edges": True,
+    },
+    "hasParent": {
+        "adapter": HasParentAdapter(
+            filepath="./samples/pc_compound2parent.ttl",
+        ),
+        "outdir": "hasParent",
+        "nodes": False,
+        "edges": True,
+    },
+    "hasSameConnectivityAs": {
+        "adapter": HasSameConnectivityAsEdge(
+            filepath="samples/pc_compound2sameconnectivity.xml", dry_run=False
+        ),
+        "outdir": "sameConnectivity",
+        "nodes": False,
+        "edges": True,
+    },
     "isotopologue": {
         "adapter": IsotopologueAdapter(
             # url="https://ftp.ncbi.nlm.nih.gov/pubchem/RDF/compound/general/pc_compound2isotopologue.ttl.gz",
             filepath="./samples/pc_compound2isotopologue.ttl.gz",
-            type='is isotopologue of',label='is_isotopologue_of'
+            type="is isotopologue of",
+            label="is_isotopologue_of",
         ),
         "outdir": "isotopologue",
         "nodes": False,
         "edges": True,
     },
-
     "stereoisomer": {
         "adapter": StereoisomerAdapter(
             filepath="./samples/pc_compound2stereoisomer_000001.ttl.gz",
-            type='is stereoisomer of',label='is_stereoisomer_of'
+            type="is stereoisomer of",
+            label="is_stereoisomer_of",
         ),
         "outdir": "stereoisomer",
         "nodes": False,
         "edges": True,
     },
-
-    "hasSameConnectivityAs": {
-        "adapter": HasSameConnectivityAsEdge(
-            filepath="samples/pc_compound2sameconnectivity.xml", dry_run=False
-        ),
-        "outdir": "compound2sameconnectivity",
-        "nodes": False,
-        "edges": True
-    }  
-
 }
 
 
