@@ -1,0 +1,500 @@
+@prefix sio:	<http://semanticscience.org/resource/> .
+@prefix compound:	<http://rdf.ncbi.nlm.nih.gov/pubchem/compound/> .
+compound:CID100687347	sio:CHEMINF_000461	compound:CID100687362 ,
+		compound:CID11881942 ,
+		compound:CID124723068 ,
+		compound:CID124723069 ,
+		compound:CID20022877 ,
+		compound:CID20022879 ,
+		compound:CID5165532 ,
+		compound:CID98265201 ,
+		compound:CID98265202 ,
+		compound:CID994573 .
+compound:CID100687362	sio:CHEMINF_000461	compound:CID100687347 ,
+		compound:CID11881942 ,
+		compound:CID124723068 ,
+		compound:CID124723069 ,
+		compound:CID20022877 ,
+		compound:CID20022879 ,
+		compound:CID5165532 ,
+		compound:CID98265201 ,
+		compound:CID98265202 ,
+		compound:CID994573 .
+compound:CID100824236	sio:CHEMINF_000461	compound:CID100824238 ,
+		compound:CID1207160 ,
+		compound:CID3141209 ,
+		compound:CID5430131 ,
+		compound:CID5452891 ,
+		compound:CID996515 .
+compound:CID100824238	sio:CHEMINF_000461	compound:CID100824236 ,
+		compound:CID1207160 ,
+		compound:CID3141209 ,
+		compound:CID5430131 ,
+		compound:CID5452891 ,
+		compound:CID996515 .
+compound:CID100831397	sio:CHEMINF_000461	compound:CID129430869 ,
+		compound:CID40737568 ,
+		compound:CID4992126 ,
+		compound:CID997457 .
+compound:CID100861571	sio:CHEMINF_000461	compound:CID124724751 ,
+		compound:CID124724752 ,
+		compound:CID20023659 ,
+		compound:CID3460308 ,
+		compound:CID40737277 ,
+		compound:CID98124532 ,
+		compound:CID98124533 ,
+		compound:CID994644 .
+compound:CID100880722	sio:CHEMINF_000461	compound:CID1236121 ,
+		compound:CID124711802 ,
+		compound:CID5098250 ,
+		compound:CID6547329 ,
+		compound:CID92540149 ,
+		compound:CID98148806 ,
+		compound:CID98384899 ,
+		compound:CID993050 .
+compound:CID100882572	sio:CHEMINF_000461	compound:CID2870243 ,
+		compound:CID42280362 ,
+		compound:CID51419850 ,
+		compound:CID51491541 ,
+		compound:CID987214 .
+compound:CID100883825	sio:CHEMINF_000461	compound:CID1233551 ,
+		compound:CID129427017 ,
+		compound:CID129427018 ,
+		compound:CID27554234 ,
+		compound:CID4422782 ,
+		compound:CID7121906 ,
+		compound:CID7121907 ,
+		compound:CID988486 .
+compound:CID100891252	sio:CHEMINF_000461	compound:CID124767922 ,
+		compound:CID3421065 ,
+		compound:CID92143080 ,
+		compound:CID97953220 ,
+		compound:CID98370366 ,
+		compound:CID98370367 ,
+		compound:CID98370368 ,
+		compound:CID994571 .
+compound:CID100891458	sio:CHEMINF_000461	compound:CID4070344 ,
+		compound:CID40737952 ,
+		compound:CID40737953 ,
+		compound:CID92329870 ,
+		compound:CID98370476 ,
+		compound:CID98370477 ,
+		compound:CID99726652 ,
+		compound:CID999633 .
+compound:CID100908555	sio:CHEMINF_000461	compound:CID163069473 ,
+		compound:CID163069474 ,
+		compound:CID163069475 ,
+		compound:CID163069476 ,
+		compound:CID3116568 ,
+		compound:CID5759628 ,
+		compound:CID6547350 ,
+		compound:CID7908076 ,
+		compound:CID9532367 ,
+		compound:CID99724181 ,
+		compound:CID993940 .
+compound:CID10152029	sio:CHEMINF_000461	compound:CID10238854 ,
+		compound:CID2876501 ,
+		compound:CID7897054 ,
+		compound:CID7897055 ,
+		compound:CID7897056 ,
+		compound:CID98131623 ,
+		compound:CID98131624 ,
+		compound:CID986948 .
+compound:CID101590650	sio:CHEMINF_000461	compound:CID11841544 ,
+		compound:CID11896178 ,
+		compound:CID1234782 ,
+		compound:CID124865615 ,
+		compound:CID129652093 ,
+		compound:CID14165077 ,
+		compound:CID18611154 ,
+		compound:CID20024661 ,
+		compound:CID4458709 ,
+		compound:CID6547266 ,
+		compound:CID7303976 ,
+		compound:CID9929219 ,
+		compound:CID990629 .
+compound:CID10179927	sio:CHEMINF_000461	compound:CID11896180 ,
+		compound:CID11896182 ,
+		compound:CID11896184 ,
+		compound:CID1234854 ,
+		compound:CID129438759 ,
+		compound:CID129438760 ,
+		compound:CID18552685 ,
+		compound:CID22307897 ,
+		compound:CID4067189 ,
+		compound:CID46231091 ,
+		compound:CID58697116 ,
+		compound:CID6958721 ,
+		compound:CID89154173 ,
+		compound:CID9866374 ,
+		compound:CID990763 .
+compound:CID102316820	sio:CHEMINF_000461	compound:CID3902786 ,
+		compound:CID981233 ,
+		compound:CID981238 ,
+		compound:CID981235 ,
+		compound:CID981236 .
+compound:CID10238854	sio:CHEMINF_000461	compound:CID10152029 ,
+		compound:CID2876501 ,
+		compound:CID7897054 ,
+		compound:CID7897055 ,
+		compound:CID7897056 ,
+		compound:CID98131623 ,
+		compound:CID98131624 ,
+		compound:CID986948 .
+compound:CID102519403	sio:CHEMINF_000461	compound:CID124523755 ,
+		compound:CID21177259 ,
+		compound:CID40627331 ,
+		compound:CID57247975 ,
+		compound:CID6591806 ,
+		compound:CID7081756 ,
+		compound:CID7118835 ,
+		compound:CID7118838 ,
+		compound:CID7118840 ,
+		compound:CID2998527 ,
+		compound:CID988386 .
+compound:CID10316116	sio:CHEMINF_000461	compound:CID989954 ,
+		compound:CID989955 .
+compound:CID103596890	sio:CHEMINF_000461	compound:CID27736389 ,
+		compound:CID3737639 ,
+		compound:CID51491792 ,
+		compound:CID51574602 ,
+		compound:CID6958813 ,
+		compound:CID92537131 ,
+		compound:CID98144322 ,
+		compound:CID992930 .
+compound:CID10363444	sio:CHEMINF_000461	compound:CID11682714 ,
+		compound:CID13395728 ,
+		compound:CID13395729 ,
+		compound:CID16211885 ,
+		compound:CID16212346 ,
+		compound:CID20815786 ,
+		compound:CID22831418 ,
+		compound:CID22831419 ,
+		compound:CID22836410 ,
+		compound:CID23308110 ,
+		compound:CID3689318 ,
+		compound:CID6732893 ,
+		compound:CID98255713 ,
+		compound:CID98255715 ,
+		compound:CID11133074 ,
+		compound:CID978316 .
+compound:CID1048854	sio:CHEMINF_000461	compound:CID3102134 ,
+		compound:CID987641 .
+compound:CID1048855	sio:CHEMINF_000461	compound:CID3102136 ,
+		compound:CID982494 .
+compound:CID10502502	sio:CHEMINF_000461	compound:CID22299862 ,
+		compound:CID6547152 ,
+		compound:CID97631193 ,
+		compound:CID986595 .
+compound:CID105633838	sio:CHEMINF_000461	compound:CID11875104 ,
+		compound:CID124722618 ,
+		compound:CID18390015 ,
+		compound:CID18390731 ,
+		compound:CID2952603 ,
+		compound:CID50903570 ,
+		compound:CID51023237 ,
+		compound:CID6547015 ,
+		compound:CID98190432 ,
+		compound:CID99719838 ,
+		compound:CID977692 .
+compound:CID10571215	sio:CHEMINF_000461	compound:CID986028 ,
+		compound:CID986030 .
+compound:CID10571607	sio:CHEMINF_000461	compound:CID990014 ,
+		compound:CID990015 .
+compound:CID10603518	sio:CHEMINF_000461	compound:CID10651067 ,
+		compound:CID124865457 ,
+		compound:CID124865458 ,
+		compound:CID3305765 ,
+		compound:CID98667339 ,
+		compound:CID99727355 ,
+		compound:CID991688 .
+compound:CID10618367	sio:CHEMINF_000461	compound:CID1284974 ,
+		compound:CID26479305 ,
+		compound:CID5004080 ,
+		compound:CID6547461 ,
+		compound:CID7203643 ,
+		compound:CID93055307 ,
+		compound:CID93055308 ,
+		compound:CID997360 .
+compound:CID10651067	sio:CHEMINF_000461	compound:CID10603518 ,
+		compound:CID124865457 ,
+		compound:CID124865458 ,
+		compound:CID3305765 ,
+		compound:CID98667339 ,
+		compound:CID99727355 ,
+		compound:CID991688 .
+compound:CID10738328	sio:CHEMINF_000461	compound:CID986069 ,
+		compound:CID986071 .
+compound:CID10835947	sio:CHEMINF_000461	compound:CID986022 ,
+		compound:CID986025 .
+compound:CID108630768	sio:CHEMINF_000461	compound:CID5061453 ,
+		compound:CID6260802 ,
+		compound:CID980802 ,
+		compound:CID980809 .
+compound:CID108642663	sio:CHEMINF_000461	compound:CID5061976 ,
+		compound:CID6260895 ,
+		compound:CID980688 ,
+		compound:CID980693 ,
+		compound:CID980697 ,
+		compound:CID980700 .
+compound:CID1097729	sio:CHEMINF_000461	compound:CID2836187 ,
+		compound:CID981442 .
+compound:CID1098645	sio:CHEMINF_000461	compound:CID2863167 ,
+		compound:CID982504 .
+compound:CID1098646	sio:CHEMINF_000461	compound:CID4613521 ,
+		compound:CID982530 .
+compound:CID1100294	sio:CHEMINF_000461	compound:CID2857814 ,
+		compound:CID981815 .
+compound:CID1100295	sio:CHEMINF_000461	compound:CID3104090 ,
+		compound:CID981821 .
+compound:CID110209001	sio:CHEMINF_000461	compound:CID124335894 ,
+		compound:CID21234057 ,
+		compound:CID22193563 ,
+		compound:CID25048355 ,
+		compound:CID4674417 ,
+		compound:CID6547509 ,
+		compound:CID999271 .
+compound:CID110209003	sio:CHEMINF_000461	compound:CID1534016 ,
+		compound:CID21215722 ,
+		compound:CID22193567 ,
+		compound:CID25049333 ,
+		compound:CID4076246 ,
+		compound:CID6547510 ,
+		compound:CID93971529 ,
+		compound:CID99117235 ,
+		compound:CID999273 .
+compound:CID110209004	sio:CHEMINF_000461	compound:CID11836919 ,
+		compound:CID22193568 ,
+		compound:CID25041598 ,
+		compound:CID4680972 ,
+		compound:CID49950917 ,
+		compound:CID6547511 ,
+		compound:CID99724755 ,
+		compound:CID999277 .
+compound:CID110209007	sio:CHEMINF_000461	compound:CID1534006 ,
+		compound:CID16466052 ,
+		compound:CID21215703 ,
+		compound:CID25035786 ,
+		compound:CID5135884 ,
+		compound:CID6547512 ,
+		compound:CID93971530 ,
+		compound:CID99117219 ,
+		compound:CID999284 .
+compound:CID110209009	sio:CHEMINF_000461	compound:CID124408364 ,
+		compound:CID21215704 ,
+		compound:CID22193584 ,
+		compound:CID25039290 ,
+		compound:CID3319317 ,
+		compound:CID6547513 ,
+		compound:CID999286 .
+compound:CID110209011	sio:CHEMINF_000461	compound:CID11836926 ,
+		compound:CID124400397 ,
+		compound:CID21215708 ,
+		compound:CID22193589 ,
+		compound:CID25044563 ,
+		compound:CID4548307 ,
+		compound:CID6547515 ,
+		compound:CID99117238 ,
+		compound:CID999290 .
+compound:CID110209015	sio:CHEMINF_000461	compound:CID1534001 ,
+		compound:CID16466112 ,
+		compound:CID21234054 ,
+		compound:CID25040980 ,
+		compound:CID28563417 ,
+		compound:CID5145621 ,
+		compound:CID5322405 ,
+		compound:CID999292 .
+compound:CID110209019	sio:CHEMINF_000461	compound:CID11836932 ,
+		compound:CID22193605 ,
+		compound:CID3650042 ,
+		compound:CID49950921 ,
+		compound:CID94854987 ,
+		compound:CID999298 .
+compound:CID110209020	sio:CHEMINF_000461	compound:CID11836933 ,
+		compound:CID1534002 ,
+		compound:CID22193608 ,
+		compound:CID25042820 ,
+		compound:CID26154538 ,
+		compound:CID4426918 ,
+		compound:CID999300 .
+compound:CID110209022	sio:CHEMINF_000461	compound:CID22193615 ,
+		compound:CID4241963 ,
+		compound:CID6547521 ,
+		compound:CID93971534 ,
+		compound:CID99724761 ,
+		compound:CID999311 .
+compound:CID110209023	sio:CHEMINF_000461	compound:CID21234058 ,
+		compound:CID22193616 ,
+		compound:CID25042385 ,
+		compound:CID40636704 ,
+		compound:CID4596564 ,
+		compound:CID6547522 ,
+		compound:CID7171596 ,
+		compound:CID999313 .
+compound:CID110209025	sio:CHEMINF_000461	compound:CID11836937 ,
+		compound:CID22193622 ,
+		compound:CID25040549 ,
+		compound:CID49950927 ,
+		compound:CID5086057 ,
+		compound:CID6547524 ,
+		compound:CID99724763 ,
+		compound:CID999318 .
+compound:CID110209026	sio:CHEMINF_000461	compound:CID16466474 ,
+		compound:CID21215710 ,
+		compound:CID25048786 ,
+		compound:CID26090658 ,
+		compound:CID4664276 ,
+		compound:CID6547525 ,
+		compound:CID999319 .
+compound:CID110209027	sio:CHEMINF_000461	compound:CID11836938 ,
+		compound:CID124396770 ,
+		compound:CID21215716 ,
+		compound:CID22193624 ,
+		compound:CID25040001 ,
+		compound:CID3686779 ,
+		compound:CID6547526 ,
+		compound:CID99117220 ,
+		compound:CID999323 .
+compound:CID110209050	sio:CHEMINF_000461	compound:CID11836949 ,
+		compound:CID40729333 ,
+		compound:CID4688094 ,
+		compound:CID49950926 ,
+		compound:CID6547544 ,
+		compound:CID7210941 ,
+		compound:CID93971797 ,
+		compound:CID99724765 ,
+		compound:CID999979 .
+compound:CID1103214	sio:CHEMINF_000461	compound:CID3107930 ,
+		compound:CID980826 .
+compound:CID1103215	sio:CHEMINF_000461	compound:CID2857514 ,
+		compound:CID980812 .
+compound:CID1103222	sio:CHEMINF_000461	compound:CID3107941 ,
+		compound:CID980820 .
+compound:CID1103235	sio:CHEMINF_000461	compound:CID3107952 ,
+		compound:CID980810 .
+compound:CID1103240	sio:CHEMINF_000461	compound:CID3107957 ,
+		compound:CID980804 .
+compound:CID1103241	sio:CHEMINF_000461	compound:CID3107959 ,
+		compound:CID980831 .
+compound:CID1103456	sio:CHEMINF_000461	compound:CID2851063 ,
+		compound:CID982377 .
+compound:CID1103852	sio:CHEMINF_000461	compound:CID1103853 ,
+		compound:CID3109657 ,
+		compound:CID985624 ,
+		compound:CID985627 .
+compound:CID1103853	sio:CHEMINF_000461	compound:CID1103852 ,
+		compound:CID3109657 ,
+		compound:CID985624 ,
+		compound:CID985627 .
+compound:CID1103862	sio:CHEMINF_000461	compound:CID3109661 ,
+		compound:CID985621 .
+compound:CID1103865	sio:CHEMINF_000461	compound:CID3109663 ,
+		compound:CID985630 .
+compound:CID1103866	sio:CHEMINF_000461	compound:CID3109664 ,
+		compound:CID985633 .
+compound:CID1103870	sio:CHEMINF_000461	compound:CID3109666 ,
+		compound:CID981164 .
+compound:CID1108924	sio:CHEMINF_000461	compound:CID3111682 ,
+		compound:CID981167 .
+compound:CID1108929	sio:CHEMINF_000461	compound:CID3111705 ,
+		compound:CID981158 .
+compound:CID1110771	sio:CHEMINF_000461	compound:CID3122846 ,
+		compound:CID986253 .
+compound:CID1111435	sio:CHEMINF_000461	compound:CID984664 .
+compound:CID1112478	sio:CHEMINF_000461	compound:CID2787614 ,
+		compound:CID982586 .
+compound:CID1115632	sio:CHEMINF_000461	compound:CID3126103 ,
+		compound:CID985986 .
+compound:CID1115633	sio:CHEMINF_000461	compound:CID3312426 ,
+		compound:CID985990 .
+compound:CID1115634	sio:CHEMINF_000461	compound:CID3126105 ,
+		compound:CID985992 .
+compound:CID1115640	sio:CHEMINF_000461	compound:CID3126112 ,
+		compound:CID986010 .
+compound:CID1115642	sio:CHEMINF_000461	compound:CID3126113 ,
+		compound:CID986020 .
+compound:CID1115643	sio:CHEMINF_000461	compound:CID3126114 ,
+		compound:CID986024 .
+compound:CID1115644	sio:CHEMINF_000461	compound:CID3126115 ,
+		compound:CID986027 .
+compound:CID1115645	sio:CHEMINF_000461	compound:CID3126116 ,
+		compound:CID986031 .
+compound:CID1115646	sio:CHEMINF_000461	compound:CID3126117 ,
+		compound:CID986036 .
+compound:CID1115648	sio:CHEMINF_000461	compound:CID3126122 ,
+		compound:CID986048 .
+compound:CID1117114	sio:CHEMINF_000461	compound:CID11836909 ,
+		compound:CID154808491 ,
+		compound:CID3128340 ,
+		compound:CID53338592 ,
+		compound:CID6968510 ,
+		compound:CID7210845 ,
+		compound:CID98121412 ,
+		compound:CID98176062 ,
+		compound:CID999224 .
+compound:CID1118406	sio:CHEMINF_000461	compound:CID3140321 ,
+		compound:CID982980 .
+compound:CID1118407	sio:CHEMINF_000461	compound:CID1733788 ,
+		compound:CID983035 .
+compound:CID1118408	sio:CHEMINF_000461	compound:CID3140322 ,
+		compound:CID982978 .
+compound:CID1118409	sio:CHEMINF_000461	compound:CID1425040 ,
+		compound:CID982983 .
+compound:CID1124149	sio:CHEMINF_000461	compound:CID2858958 ,
+		compound:CID981445 .
+compound:CID1124791	sio:CHEMINF_000461	compound:CID5093777 ,
+		compound:CID985864 .
+compound:CID1124800	sio:CHEMINF_000461	compound:CID3132257 ,
+		compound:CID985874 .
+compound:CID1124809	sio:CHEMINF_000461	compound:CID4247835 ,
+		compound:CID985900 .
+compound:CID1132314	sio:CHEMINF_000461	compound:CID1713062 ,
+		compound:CID988933 .
+compound:CID1157563	sio:CHEMINF_000461	compound:CID1333085 ,
+		compound:CID985428 .
+compound:CID1159931	sio:CHEMINF_000461	compound:CID1593643 ,
+		compound:CID3114642 ,
+		compound:CID5759055 ,
+		compound:CID6510719 ,
+		compound:CID984771 ,
+		compound:CID984772 .
+compound:CID1160204	sio:CHEMINF_000461	compound:CID1160206 ,
+		compound:CID129444938 ,
+		compound:CID129444939 ,
+		compound:CID3114699 ,
+		compound:CID5759105 ,
+		compound:CID6374768 ,
+		compound:CID981938 ,
+		compound:CID981940 .
+compound:CID1160206	sio:CHEMINF_000461	compound:CID1160204 ,
+		compound:CID129444938 ,
+		compound:CID129444939 ,
+		compound:CID3114699 ,
+		compound:CID5759105 ,
+		compound:CID6374768 ,
+		compound:CID981938 ,
+		compound:CID981940 .
+compound:CID11682714	sio:CHEMINF_000461	compound:CID10363444 ,
+		compound:CID13395728 ,
+		compound:CID13395729 ,
+		compound:CID16211885 ,
+		compound:CID16212346 ,
+		compound:CID20815786 ,
+		compound:CID22831418 ,
+		compound:CID22831419 ,
+		compound:CID22836410 ,
+		compound:CID23308110 ,
+		compound:CID3689318 ,
+		compound:CID6732893 ,
+		compound:CID98255713 ,
+		compound:CID98255715 ,
+		compound:CID11133074 ,
+		compound:CID978316 .
+compound:CID117069164	sio:CHEMINF_000461	compound:CID1723045 ,
+		compound:CID1723046 ,
+		compound:CID1723047 ,
+		compound:CID1723048 ,
+		compound:CID3114692 ,
+		compound:CID5759098 ,
+		compound:CID981946 ,
+		compound:CID981948 .
