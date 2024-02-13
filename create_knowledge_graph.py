@@ -1,17 +1,39 @@
 """
 Knowledge graph generation through BioCypher script
 """
+from adapters.has_same_connectivity_adapter import HasSameConnectivityAsEdge
 from metta_writer import *
 from biocypher._logger import logger
 from adapters.compound_adapter import CompoundAdapter
+
 from adapters.is_isotopologue_of_adapter import IsotopologueAdapter
 from adapters.is_stereoisomer_of_adapter import StereoisomerAdapter
 
+from adapters.has_component_adapter import HasComponentEdge
+
+
 ADAPTERS = {
-    "compound": {
-        "adapter": CompoundAdapter(
-            filepath="samples/pc_compound2descriptor_000001_chunk_1.xml", dry_run=True
+    # "compound": {
+    #     "adapter": CompoundAdapter(
+    #         filepath="samples/pc_compound2descriptor_000001_chunk_1.xml", dry_run=True
+    #     ),
+    #     "outdir": "compound_complexity",
+    #     "nodes": True,
+    #     "edges": False,
+    # },
+    # "compound2component": {
+    #     "adapter": HasComponentEdge(
+    #         filepath="samples/pc_compound2component.xml", dry_run=False
+    #     ),
+    #     "outdir": "compound2component",
+    #     "nodes": False,
+    #     "edges": True
+    # },
+    "hasSameConnectivityAs": {
+        "adapter": HasSameConnectivityAsEdge(
+            filepath="samples/pc_compound2sameconnectivity.xml", dry_run=False
         ),
+
         "outdir": "compound_complexity",
         "nodes": True,
         "edges": False,
@@ -37,6 +59,12 @@ ADAPTERS = {
         "nodes": False,
         "edges": True,
     }
+
+        "outdir": "compound2sameconnectivity",
+        "nodes": False,
+        "edges": True
+    }  
+
 }
 
 
