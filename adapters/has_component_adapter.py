@@ -36,7 +36,7 @@ class HasComponentEdge(Adapter):
             logger.error(f"Input file {filepath} doesn't exist")
             raise FileNotFoundError(f"Input file {filepath} doesn't exist")
 
-        # To convert the file path to format tollerable suitable for the owlready
+        # To convert the file path to format tolerable suitable for the owlready
         filepath = os.path.realpath(filepath)
 
         self.dry_run = dry_run
@@ -44,7 +44,6 @@ class HasComponentEdge(Adapter):
 
     def get_edges(self):
         self.graph = self.__get_graph()
-        self.cache_edge_properties()
 
         edges = list(
             self.graph.subject_objects(predicate=self.HAS_COMPONENT, unique=True)
@@ -96,19 +95,3 @@ class HasComponentEdge(Adapter):
             key = "{}_{}".format("number", key)
 
         return key
-
-    def cache_edge_properties(self):
-        self.cache["node_types"] = self.cache_predicate(HasComponentEdge.TYPE)
-        self.cache["on_property"] = self.cache_predicate(HasComponentEdge.ON_PROPERTY)
-        self.cache["some_values_from"] = self.cache_predicate(
-            HasComponentEdge.SOME_VALUES_FROM
-        )
-        self.cache["all_values_from"] = self.cache_predicate(
-            HasComponentEdge.ALL_VALUES_FROM
-        )
-
-    def cache_predicate(self, predicate):
-        return list(self.graph.subject_objects(predicate=predicate))
-
-    def clear_cache(self):
-        self.cache = {}

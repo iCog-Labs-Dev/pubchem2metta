@@ -1,6 +1,7 @@
 from adapters.compound_adapter import CompoundAdapter
 import rdflib
-from owlready2 import *
+from rdflib import *
+import os
 from tqdm import tqdm
 from adapters import Adapter
 from biocypher._logger import logger
@@ -36,7 +37,7 @@ class HasSameConnectivityAsEdge(Adapter):
             logger.error(f"Input file {filepath} doesn't exist")
             raise FileNotFoundError(f"Input file {filepath} doesn't exist")
 
-        # To convert the file path to format tollerable suitable for the owlready
+        # To convert the file path to format tolerable suitable for the owlready
         filepath = os.path.realpath(filepath)
 
         self.dry_run = dry_run
@@ -44,7 +45,6 @@ class HasSameConnectivityAsEdge(Adapter):
 
     def get_edges(self):
         self.graph = self.__get_graph()
-        self.cache_edge_properties()
 
         edges = list(
             self.graph.subject_objects(
@@ -98,21 +98,3 @@ class HasSameConnectivityAsEdge(Adapter):
             key = "{}_{}".format("number", key)
 
         return key
-
-    def cache_edge_properties(self):
-        self.cache["node_types"] = self.cache_predicate(HasSameConnectivityAsEdge.TYPE)
-        self.cache["on_property"] = self.cache_predicate(
-            HasSameConnectivityAsEdge.ON_PROPERTY
-        )
-        self.cache["some_values_from"] = self.cache_predicate(
-            HasSameConnectivityAsEdge.SOME_VALUES_FROM
-        )
-        self.cache["all_values_from"] = self.cache_predicate(
-            HasSameConnectivityAsEdge.ALL_VALUES_FROM
-        )
-
-    def cache_predicate(self, predicate):
-        return list(self.graph.subject_objects(predicate=predicate))
-
-    def clear_cache(self):
-        self.cache = {}
