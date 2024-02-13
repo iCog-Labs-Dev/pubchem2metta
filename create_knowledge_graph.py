@@ -4,6 +4,8 @@ Knowledge graph generation through BioCypher script
 from metta_writer import *
 from biocypher._logger import logger
 from adapters.compound_adapter import CompoundAdapter
+from adapters.is_isotopologue_of_adapter import IsotopologueAdapter
+from adapters.is_stereoisomer_of_adapter import StereoisomerAdapter
 
 ADAPTERS = {
     "compound": {
@@ -14,6 +16,27 @@ ADAPTERS = {
         "nodes": True,
         "edges": False,
     },
+
+    "isotopologue": {
+        "adapter": IsotopologueAdapter(
+            # url="https://ftp.ncbi.nlm.nih.gov/pubchem/RDF/compound/general/pc_compound2isotopologue.ttl.gz",
+            filepath="./samples/pc_compound2isotopologue.ttl.gz",
+            type='is isotopologue of',label='is_isotopologue_of'
+        ),
+        "outdir": "isotopologue",
+        "nodes": False,
+        "edges": True,
+    },
+
+    "stereoisomer": {
+        "adapter": StereoisomerAdapter(
+            filepath="./samples/pc_compound2stereoisomer_000001.ttl.gz",
+            type='is stereoisomer of',label='is_stereoisomer_of'
+        ),
+        "outdir": "stereoisomer",
+        "nodes": False,
+        "edges": True,
+    }
 }
 
 
