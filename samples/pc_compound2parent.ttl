@@ -1,4 +1,4 @@
-@prefix vocab:	<http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary      #> .
+@prefix vocab:	<http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#> .
 @prefix compound:	<http://rdf.ncbi.nlm.nih.gov/pubchem/compound/> .
 compound:CID52941712	vocab:has_parent	compound:CID10571215 .
 compound:CID23723115	vocab:has_parent	compound:CID10835947 .
