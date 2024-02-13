@@ -133,20 +133,20 @@ is stereoisomer of:
   exact_mappings:
     - CHEMINF:000461
 
-has same connectivity as:
-  represented_as: edge
-  is_a: related to at instance level
-  input_label: has_same_connectivity_as
-  source: compound
-  target: compound
-  properties:
-    source: str
-    version: str
-    source_url: str
-  description: >-
-    Connects a molecule to an isomer with identical constitution
-  exact_mappings:
-    - CHEMINF:000462
+# has same connectivity as:
+#   represented_as: edge
+#   is_a: related to at instance level
+#   input_label: has_same_connectivity_as
+#   source: compound
+#   target: compound
+#   properties:
+#     source: str
+#     version: str
+#     source_url: str
+#   description: >-
+#     Connects a molecule to an isomer with identical constitution
+#   exact_mappings:
+#     - CHEMINF:000462
 
 has pubchem normalized counterpart:
   represented_as: edge

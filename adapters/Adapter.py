@@ -1,6 +1,6 @@
 # Author Abdulrahman S. Omar <xabush@singularitynet.io>
 
-class Adapter:
+class Adapter1:
 
     def get_nodes(self):
         pass

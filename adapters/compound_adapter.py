@@ -40,6 +40,7 @@ class CompoundAdapter(Adapter):
 
     def __init__(self, filepath=None, label="compound", dry_run=False):
         self.label = label
+        self.file_path = None
         if not filepath:
             logger.error("Input file not specified")
             raise ValueError("Input file not specified")
@@ -72,7 +73,7 @@ class CompoundAdapter(Adapter):
             # logger.error(f"Request failed: {e}")
             return None
 
-    def __get_graph(self, ontology):
+    def _get_graph(self, ontology):
         onto = get_ontology(CompoundAdapter.ONTOLOGIES[ontology]).load()
         self.graph = default_world.as_rdflib_graph()
         self.clear_cache()
@@ -80,7 +81,7 @@ class CompoundAdapter(Adapter):
 
     def get_nodes(self):
         for ontology in CompoundAdapter.ONTOLOGIES.keys():
-            self.graph = self.__get_graph(ontology)
+            self.graph = self._get_graph(ontology)
             self.cache_node_properties()
             subject_objects = list(self.graph.subject_objects())
 

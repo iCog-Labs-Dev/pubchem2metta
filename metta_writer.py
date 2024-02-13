@@ -17,71 +17,71 @@ class MeTTaWriter:
             logger.info(f"Directory {output_dir} doesn't exist. Creating it...")
             self.output_path.mkdir()
 
-        # self.bcy = BioCypher(schema_config_path=schema_config,
-        #                      biocypher_config_path=biocypher_config)
+        self.bcy = BioCypher(schema_config_path=schema_config,
+                             biocypher_config_path=biocypher_config)
 
-        # self.onotology = self.bcy._get_ontology()
-        # self.create_type_hierarchy()
+        self.onotology = self.bcy._get_ontology()
+        self.create_type_hierarchy()
 
         #self.excluded_properties = ["licence", "version", "source"]
         self.excluded_properties = []
 
-    # def create_type_hierarchy(self):
-    #     G = self.onotology._nx_graph
-    #     file_path = f"{self.output_path}/type_defs.metta"
-    #     with open(file_path, "w") as f:
-    #         for node in G.nodes:
-    #             if "mixin" in node: continue
-    #             ancestor = list(self.get_parent(G, node))[-1]
-    #             node = self.convert_input_labels(node)
-    #             ancestor = self.convert_input_labels(ancestor)
-    #             if ancestor == node:
-    #                 f.write(f"(: {node.upper()} Type)\n")
+    def create_type_hierarchy(self):
+        G = self.onotology._nx_graph
+        file_path = f"{self.output_path}/type_defs.metta"
+        with open(file_path, "w") as f:
+            for node in G.nodes:
+                if "mixin" in node: continue
+                ancestor = list(self.get_parent(G, node))[-1]
+                node = self.convert_input_labels(node)
+                ancestor = self.convert_input_labels(ancestor)
+                if ancestor == node:
+                    f.write(f"(: {node.upper()} Type)\n")
 
-    #             else:
-    #                 f.write(f"(<: {node.upper()} {ancestor.upper()})\n")
+                else:
+                    f.write(f"(<: {node.upper()} {ancestor.upper()})\n")
 
-    #         self.create_data_constructors(f)
+            self.create_data_constructors(f)
 
-    #     logger.info("Type hierarchy created successfully.")
+        logger.info("Type hierarchy created successfully.")
 
-    # def create_data_constructors(self, file):
-    #     schema = self.bcy._get_ontology_mapping()._extend_schema()
-    #     self.edge_node_types = {}
-    #     def edge_data_constructor(edge_type, source_type, target_type, label):
-    #         return f"(: {label.lower()} (-> {source_type.upper()} {target_type.upper()} {edge_type.upper()})"
+    def create_data_constructors(self, file):
+        schema = self.bcy._get_ontology_mapping()._extend_schema()
+        self.edge_node_types = {}
+        def edge_data_constructor(edge_type, source_type, target_type, label):
+            return f"(: {label.lower()} (-> {source_type.upper()} {target_type.upper()} {edge_type.upper()})"
 
-    #     def node_data_constructor(node_type, node_label):
-    #         return f"(: {node_label.lower()} (-> $x {node_type.upper()}))"
+        def node_data_constructor(node_type, node_label):
+            return f"(: {node_label.lower()} (-> $x {node_type.upper()}))"
 
-    #     for k, v in schema.items():
-    #         if v["represented_as"] == "edge": #(: (label $x $y) (-> source_type target_type
-    #             edge_type = self.convert_input_labels(k)
+        for k, v in schema.items():
+            if v["represented_as"] == "edge": #(: (label $x $y) (-> source_type target_type
+                edge_type = self.convert_input_labels(k)
 
-    #             # ## TODO fix this in the scheme config
-    #             if isinstance(v["input_label"], list):
-    #                 label = self.convert_input_labels(v["input_label"][0])
-    #                 source_type = self.convert_input_labels(v["source"][0])
-    #                 target_type = self.convert_input_labels(v["target"][0])
-    #             else:
-    #                 label = self.convert_input_labels(v["input_label"])
-    #                 source_type = self.convert_input_labels(v["source"])
-    #                 target_type = self.convert_input_labels(v["target"])
+                # ## TODO fix this in the scheme config
+                if isinstance(v["input_label"], list):
+                    label = self.convert_input_labels(v["input_label"][0])
+                    source_type = self.convert_input_labels(v["source"][0])
+                    target_type = self.convert_input_labels(v["target"][0])
+                else:
+                    label = self.convert_input_labels(v["input_label"])
+                    source_type = self.convert_input_labels(v["source"])
+                    target_type = self.convert_input_labels(v["target"])
 
-    #             out_str = edge_data_constructor(edge_type, source_type, target_type, label)
-    #             file.write(out_str + "\n")
-    #             self.edge_node_types[label.lower()] = {"source": source_type.lower(), "target": target_type.lower()}
+                out_str = edge_data_constructor(edge_type, source_type, target_type, label)
+                file.write(out_str + "\n")
+                self.edge_node_types[label.lower()] = {"source": source_type.lower(), "target": target_type.lower()}
 
-    #         elif v["represented_as"] == "node":
-    #             label = v["input_label"]
-    #             if not isinstance(label, list):
-    #                 label = [label]
+            elif v["represented_as"] == "node":
+                label = v["input_label"]
+                if not isinstance(label, list):
+                    label = [label]
 
-    #             label = [self.convert_input_labels(l) for l in label]
-    #             node_type = self.convert_input_labels(k)
-    #             for l in label:
-    #                 out_str = node_data_constructor(node_type, l)
-    #                 file.write(out_str + "\n")
+                label = [self.convert_input_labels(l) for l in label]
+                node_type = self.convert_input_labels(k)
+                for l in label:
+                    out_str = node_data_constructor(node_type, l)
+                    file.write(out_str + "\n")
 
 
     def write_nodes(self, nodes, path_prefix=None, create_dir=True):

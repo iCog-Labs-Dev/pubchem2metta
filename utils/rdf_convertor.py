@@ -14,6 +14,9 @@ class RDFConverter:
         self.remove_old_files = remove_old_files
 
     def convert_files(self):
+        print("inside convert files")
+        print(self.input_dir)
+        print(list(os.walk(self.input_dir)))
         for _, _, files in os.walk(self.input_dir):
             for file_name in files:
                 if file_name.endswith(f".{self.input_format}"):
@@ -35,3 +38,14 @@ class RDFConverter:
     def __get_output_path(self, input_path, new_extension):
         input_path = Path(input_path)
         return str(input_path.with_suffix(f".{new_extension}"))
+
+if __name__ == "__main__":
+    # Provide the input directory path
+    print("inside rdf convertor")
+    input_directory = "../samples/"
+
+    # Create an instance of RDFConverter
+    rdf_converter = RDFConverter(input_dir=input_directory)
+
+    # Perform the file conversion
+    rdf_converter.convert_files()
