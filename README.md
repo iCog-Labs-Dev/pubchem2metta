@@ -12,7 +12,7 @@ pipx install poetry
 ```bash
 poetry install
 ```
-3. **Activate poetry virtual environment: **
+3. **Activate poetry virtual environment:**
 ```bash
 poetry shell
 ```
@@ -20,6 +20,7 @@ poetry shell
 ```bash
 python create_knowledge_graph.py
 ```
+
 
 - Once the MeTTa files are generated, the **nodes** and **edges** for the adapters will be stored in the `metta_out` folder, within their corresponding sub-folders.
 - You can find some sample PubChem RDF data to be mapped to MeTTa stored in the `samples` folder. 
