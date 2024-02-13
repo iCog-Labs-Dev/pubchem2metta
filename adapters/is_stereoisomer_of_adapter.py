@@ -38,7 +38,7 @@ class StereoisomerAdapter(Adapter):
         with gzip.open(self.filepath, 'rb') as f:
             g.parse(f, format='turtle')
 
-        for subj, pred, obj in tqdm(g, desc="Loading compounds", unit="is_stereoisomer_of"):
+        for subj, pred, obj in tqdm(g, desc="Running adapter: is_stereoisomer_of", unit="compound"):
             subject_id = subj.split('/')[-1]
             object_id = obj.split('/')[-1]
 
