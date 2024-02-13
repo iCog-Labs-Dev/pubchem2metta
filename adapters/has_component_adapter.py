@@ -1,6 +1,6 @@
-from adapters.compound_adapter import CompoundAdapter
 import rdflib
-from owlready2 import *
+from rdflib import *
+import os
 from tqdm import tqdm
 from adapters import Adapter
 from biocypher._logger import logger
