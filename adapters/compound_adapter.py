@@ -17,7 +17,6 @@ class CompoundAdapter(Adapter):
     DRY_RUN = 10
 
     HAS_ATTRIBUTE = rdflib.term.URIRef("http://semanticscience.org/resource/SIO_000008")
-
     COMPOUNDS = {}
     EXCLUDED_PROPERTIES = [
         "SubStructure_Keys_Fingerprint",
@@ -38,6 +37,7 @@ class CompoundAdapter(Adapter):
     ):
         self.node_label = node_label
         self.edge_label = edge_label
+        
         if not filepath:
             logger.error("Input file not specified")
             raise ValueError("Input file not specified")
@@ -73,8 +73,10 @@ class CompoundAdapter(Adapter):
         return self.graph
 
     def get_nodes(self):
+
         for ontology in CompoundAdapter.COMPOUNDS.keys():
             self.graph = self.__get_graph(ontology)
+
             subject_objects = list(self.graph.subject_objects())
 
             nodes_dict = {}
