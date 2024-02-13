@@ -63,9 +63,9 @@ class HasParentAdapter(Adapter):
             # avoiding blank nodes and other arbitrary node types
             if not isinstance(node, rdflib.term.URIRef):
                 continue
-
             source_id = HasParentAdapter.to_key(node)
             target_id = HasParentAdapter.to_key(nodes_dict[node])
+            _id = f"{source_id}_{target_id}"
 
             if not (source_id and target_id):
                 continue
@@ -75,7 +75,7 @@ class HasParentAdapter(Adapter):
                 "source_url": HasParentAdapter.COMPOUNDS[self.label],
             }
             i += 1
-            yield source_id, source_id, target_id, self.label, props
+            yield _id, source_id, target_id, self.label, props
 
     @classmethod
     def to_key(cls, node_uri):
