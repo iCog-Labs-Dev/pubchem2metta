@@ -1,6 +1,7 @@
 """
 Knowledge graph generation through BioCypher script
 """
+from adapters.has_same_connectivity_adapter import HasSameConnectivityAsEdge
 from metta_writer import *
 from biocypher._logger import logger
 from adapters.compound_adapter import CompoundAdapter
@@ -15,14 +16,22 @@ ADAPTERS = {
     #     "nodes": True,
     #     "edges": False,
     # },
-    "compound2component": {
-        "adapter": HasComponentEdge(
-            filepath="samples/pc_compound2component.xml", dry_run=True
+    # "compound2component": {
+    #     "adapter": HasComponentEdge(
+    #         filepath="samples/pc_compound2component.xml", dry_run=False
+    #     ),
+    #     "outdir": "compound2component",
+    #     "nodes": False,
+    #     "edges": True
+    # },
+    "hasSameConnectivityAs": {
+        "adapter": HasSameConnectivityAsEdge(
+            filepath="samples/pc_compound2sameconnectivity.xml", dry_run=False
         ),
-        "outdir": "compound2component",
+        "outdir": "compound2sameconnectivity",
         "nodes": False,
         "edges": True
-    } 
+    }  
 }
 
 

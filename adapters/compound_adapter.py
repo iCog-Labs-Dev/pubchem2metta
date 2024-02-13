@@ -73,7 +73,7 @@ class CompoundAdapter(Adapter):
             # logger.error(f"Request failed: {e}")
             return None
 
-    def _get_graph(self, ontology):
+    def __get_graph(self, ontology):
         onto = get_ontology(CompoundAdapter.ONTOLOGIES[ontology]).load()
         self.graph = default_world.as_rdflib_graph()
         self.clear_cache()
