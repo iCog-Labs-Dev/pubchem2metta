@@ -84,13 +84,10 @@ class DescriptorAdapter(Adapter):
 
             entries = DescriptorAdapter.DESCRIPTORS.get(descriptor)
             nodes_dict = {}
-            if not entries:
-                continue
 
-            for k, v in entries.items():
-                nodes_dict[k] = v
-
-            nodes = nodes_dict.keys()
+            if entries:
+                for k, v in entries.items():
+                    nodes_dict[k] = v
 
             i = 0
             term_id = descriptor
@@ -98,16 +95,14 @@ class DescriptorAdapter(Adapter):
 
             # logger.info(f"Node: {node} with term id {term_id}")
             props = {}
-            if data is None:
-                continue
+            if data:
+                if data.get("source_url"):
+                    source_url = data.get("source_url")
+                    props["source_url"] = source_url
 
-            if data.get("source_url"):
-                source_url = data.get("source_url")
-                props["source_url"] = source_url
-
-            if data.get("unit"):
-                unit = data.get("unit")
-                props["unit"] = unit
+                if data.get("unit"):
+                    unit = data.get("unit")
+                    props["unit"] = unit
 
             props["id"] = term_id
             props["source"] = DescriptorAdapter.SOURCE
