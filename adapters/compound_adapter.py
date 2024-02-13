@@ -1,5 +1,6 @@
+import os
 import rdflib
-from owlready2 import *
+from rdflib import *
 from tqdm import tqdm
 from adapters import Adapter
 from biocypher._logger import logger
@@ -37,7 +38,7 @@ class CompoundAdapter(Adapter):
     ):
         self.node_label = node_label
         self.edge_label = edge_label
-        
+
         if not filepath:
             logger.error("Input file not specified")
             raise ValueError("Input file not specified")
@@ -50,7 +51,7 @@ class CompoundAdapter(Adapter):
         filepath = os.path.realpath(filepath)
 
         self.dry_run = dry_run
-        CompoundAdapter.COMPOUNDS[label] = f"file://{filepath}"
+        CompoundAdapter.COMPOUNDS[node_label] = f"file://{filepath}"
         self.file_path = filepath
 
     def __getValue(self, url):
@@ -67,15 +68,15 @@ class CompoundAdapter(Adapter):
             # logger.error(f"Request failed: {e}")
             return None
 
-    def __get_graph(self, ontology):
-        get_ontology(CompoundAdapter.COMPOUNDS[ontology]).load()
-        self.graph = default_world.as_rdflib_graph()
-        return self.graph
+    def __get_graph(self):
+        graph = Graph()
+        graph.parse(self.file_path, format="ttl")
+        return graph
 
     def get_nodes(self):
 
         for ontology in CompoundAdapter.COMPOUNDS.keys():
-            self.graph = self.__get_graph(ontology)
+            self.graph = self.__get_graph()
 
             subject_objects = list(self.graph.subject_objects())
 
@@ -121,7 +122,7 @@ class CompoundAdapter(Adapter):
 
     def get_edges(self):
         for ontology in CompoundAdapter.COMPOUNDS.keys():
-            self.graph = self.__get_graph(ontology)
+            self.graph = self.__get_graph()
             subject_objects = list(self.graph.subject_objects())
 
             nodes_dict = {}
