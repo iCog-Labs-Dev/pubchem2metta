@@ -18,11 +18,11 @@ from adapters.has_component_adapter import HasComponentEdge
 ADAPTERS = {
     "compound": {
         "adapter": CompoundAdapter(
-            filepath="samples/pc_compound2descriptor_000001_chunk_1.xml", dry_run=True
+            filepath="samples/pc_compound2descriptor_000001_chunk_1.ttl", dry_run=True
         ),
-        "outdir": "compound_complexity",
+        "outdir": "compound",
         "nodes": True,
-        "edges": False,
+        "edges": True,
     },
     "descriptor": {
         "adapter": DescriptorAdapter(),
@@ -32,7 +32,7 @@ ADAPTERS = {
     },
     "compound2component": {
         "adapter": HasComponentEdge(
-            filepath="samples/pc_compound2component.xml", dry_run=False
+            filepath="samples/pc_compound2component.ttl", dry_run=False
         ),
         "outdir": "compound2component",
         "nodes": False,
@@ -48,7 +48,7 @@ ADAPTERS = {
     },
     "hasSameConnectivityAs": {
         "adapter": HasSameConnectivityAsEdge(
-            filepath="samples/pc_compound2sameconnectivity.xml", dry_run=False
+            filepath="samples/pc_compound2sameconnectivity.ttl", dry_run=False
         ),
         "outdir": "sameConnectivity",
         "nodes": False,
