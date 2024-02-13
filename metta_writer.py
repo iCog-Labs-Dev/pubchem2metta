@@ -1,14 +1,13 @@
-# Author Abdulrahman S. Omar <xabush@singularitynet.io>
 from biocypher import BioCypher
 import pathlib
 import os
 from biocypher._logger import logger
 import networkx as nx
 
+
 class MeTTaWriter:
 
-    def __init__(self, schema_config, biocypher_config,
-                 output_dir):
+    def __init__(self, schema_config, biocypher_config, output_dir):
         self.schema_config = schema_config
         self.biocypher_config = biocypher_config
         self.output_path = pathlib.Path(output_dir)
@@ -17,21 +16,23 @@ class MeTTaWriter:
             logger.info(f"Directory {output_dir} doesn't exist. Creating it...")
             self.output_path.mkdir()
 
-        self.bcy = BioCypher(schema_config_path=schema_config,
-                             biocypher_config_path=biocypher_config)
+        self.bcy = BioCypher(
+            schema_config_path=schema_config, biocypher_config_path=biocypher_config
+        )
 
-        self.onotology = self.bcy._get_ontology()
+        self.ontology = self.bcy._get_ontology()
         self.create_type_hierarchy()
 
-        #self.excluded_properties = ["licence", "version", "source"]
+        # self.excluded_properties = ["license", "version", "source"]
         self.excluded_properties = []
 
     def create_type_hierarchy(self):
-        G = self.onotology._nx_graph
+        G = self.ontology._nx_graph
         file_path = f"{self.output_path}/type_defs.metta"
         with open(file_path, "w") as f:
             for node in G.nodes:
-                if "mixin" in node: continue
+                if "mixin" in node:
+                    continue
                 ancestor = list(self.get_parent(G, node))[-1]
                 node = self.convert_input_labels(node)
                 ancestor = self.convert_input_labels(ancestor)
@@ -48,6 +49,7 @@ class MeTTaWriter:
     def create_data_constructors(self, file):
         schema = self.bcy._get_ontology_mapping()._extend_schema()
         self.edge_node_types = {}
+
         def edge_data_constructor(edge_type, source_type, target_type, label):
             return f"(: {label.lower()} (-> {source_type.upper()} {target_type.upper()} {edge_type.upper()})"
 
@@ -55,7 +57,9 @@ class MeTTaWriter:
             return f"(: {node_label.lower()} (-> $x {node_type.upper()}))"
 
         for k, v in schema.items():
-            if v["represented_as"] == "edge": #(: (label $x $y) (-> source_type target_type
+            if (
+                v["represented_as"] == "edge"
+            ):  # (: (label $x $y) (-> source_type target_type
                 edge_type = self.convert_input_labels(k)
 
                 # ## TODO fix this in the scheme config
@@ -68,9 +72,14 @@ class MeTTaWriter:
                     source_type = self.convert_input_labels(v["source"])
                     target_type = self.convert_input_labels(v["target"])
 
-                out_str = edge_data_constructor(edge_type, source_type, target_type, label)
+                out_str = edge_data_constructor(
+                    edge_type, source_type, target_type, label
+                )
                 file.write(out_str + "\n")
-                self.edge_node_types[label.lower()] = {"source": source_type.lower(), "target": target_type.lower()}
+                self.edge_node_types[label.lower()] = {
+                    "source": source_type.lower(),
+                    "target": target_type.lower(),
+                }
 
             elif v["represented_as"] == "node":
                 label = v["input_label"]
@@ -83,13 +92,14 @@ class MeTTaWriter:
                     out_str = node_data_constructor(node_type, l)
                     file.write(out_str + "\n")
 
-
     def write_nodes(self, nodes, path_prefix=None, create_dir=True):
         if path_prefix is not None:
             file_path = f"{self.output_path}/{path_prefix}/nodes.metta"
             if create_dir:
                 if not os.path.exists(f"{self.output_path}/{path_prefix}"):
-                    pathlib.Path(f"{self.output_path}/{path_prefix}").mkdir(parents=True, exist_ok=True)
+                    pathlib.Path(f"{self.output_path}/{path_prefix}").mkdir(
+                        parents=True, exist_ok=True
+                    )
         else:
             file_path = f"{self.output_path}/nodes.metta"
         with open(file_path, "w") as f:
@@ -102,14 +112,14 @@ class MeTTaWriter:
 
         logger.info("Finished writing out nodes")
 
-
-
     def write_edges(self, edges, path_prefix=None, create_dir=True):
         if path_prefix is not None:
             file_path = f"{self.output_path}/{path_prefix}/edges.metta"
             if create_dir:
                 if not os.path.exists(f"{self.output_path}/{path_prefix}"):
-                    pathlib.Path(f"{self.output_path}/{path_prefix}").mkdir(parents=True, exist_ok=True)
+                    pathlib.Path(f"{self.output_path}/{path_prefix}").mkdir(
+                        parents=True, exist_ok=True
+                    )
         else:
             file_path = f"{self.output_path}/edges.metta"
 
@@ -136,25 +146,27 @@ class MeTTaWriter:
         def_out = f"({label} ({source_type} {source_id}) ({target_type} {target_id}))"
         return self.write_property(def_out, properties)
 
-
     def write_property(self, def_out, property):
         out_str = [def_out]
         for k, v in property.items():
-            if k in self.excluded_properties or v is None: continue
+            if k in self.excluded_properties or v is None:
+                continue
             if isinstance(v, list):
                 prop = "("
                 for i, e in enumerate(v):
                     if isinstance(e, str):
-                        prop += f'\"{e}\"'
-                    else: prop += f'{e}'
-                    if i != len(v) - 1: prop += " "
+                        prop += f'"{e}"'
+                    else:
+                        prop += f"{e}"
+                    if i != len(v) - 1:
+                        prop += " "
                 prop += ")"
-                out_str.append(f'(has-property {def_out} {k} {prop})')
+                out_str.append(f"(has-property {def_out} {k} {prop})")
             else:
                 if isinstance(v, str):
-                    out_str.append(f'(has-property {def_out} {k} \"{v}\")')
+                    out_str.append(f'(has-property {def_out} {k} "{v}")')
                 else:
-                    out_str.append(f'(has-property {def_out} {k} {v})')
+                    out_str.append(f"(has-property {def_out} {k} {v})")
         return out_str
 
     def convert_input_labels(self, label, replace_char="_"):
