@@ -58,7 +58,7 @@ descriptor:
 # Associations
 # ---
 
-has property:
+has descriptor:
   represented_as: edge
   is_a: has attribute
   input_label: has_property

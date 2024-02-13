@@ -33,7 +33,7 @@ class CompoundAdapter(Adapter):
         self,
         filepath=None,
         node_label="compound",
-        edge_label="has-property",
+        edge_label="has-descriptor",
         dry_run=False,
     ):
         self.node_label = node_label
