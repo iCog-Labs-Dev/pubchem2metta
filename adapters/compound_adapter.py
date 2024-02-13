@@ -33,7 +33,7 @@ class CompoundAdapter(Adapter):
         self,
         filepath=None,
         node_label="compound",
-        edge_label="has-descriptor",
+        edge_label="has_descriptor",
         dry_run=False,
     ):
         self.node_label = node_label
@@ -182,7 +182,9 @@ class CompoundAdapter(Adapter):
                         )
                         value = property["value"][value_key]
 
-                        yield "", source_id, target_id, self.edge_label, {value}
+                        yield "", source_id, target_id, self.edge_label, {
+                            "value": value
+                        }
 
                     for key, count in compound_info.get("count", []).items():
                         target_id = ""
@@ -209,7 +211,7 @@ class CompoundAdapter(Adapter):
 
                     target_id = "Total_Formal_Charge"
                     value = compound_info.get("charge", "")
-                    yield "", source_id, target_id, self.edge_label, {value}
+                    yield "", source_id, target_id, self.edge_label, {"value": value}
 
                 i += 1
 

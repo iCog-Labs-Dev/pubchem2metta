@@ -61,7 +61,7 @@ descriptor:
 has descriptor:
   represented_as: edge
   is_a: has attribute
-  input_label: has_property
+  input_label: has_descriptor
   source: compound
   target: descriptor
   properties:
