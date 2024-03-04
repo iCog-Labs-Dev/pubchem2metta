@@ -47,7 +47,7 @@ descriptor:
   # preferred_id: pubchem
   input_label: descriptor
   properties:
-    id: str
+    # id: str
     name: str
     unit: str
     source: str

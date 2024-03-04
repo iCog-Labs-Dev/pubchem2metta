@@ -90,10 +90,10 @@ class DescriptorAdapter(Adapter):
                     nodes_dict[k] = v
 
             i = 0
-            term_id = descriptor
+            descriptor_name = descriptor
             data = entries
 
-            # logger.info(f"Node: {node} with term id {term_id}")
+            # logger.info(f"Node: {node} with descriptor name {descriptor_name}")
             props = {}
             if data:
                 if data.get("source_url"):
@@ -104,10 +104,10 @@ class DescriptorAdapter(Adapter):
                     unit = data.get("unit")
                     props["unit"] = unit
 
-            props["id"] = term_id
+            props["name"] = descriptor_name
             props["source"] = DescriptorAdapter.SOURCE
             props["version"] = DescriptorAdapter.VERSION
 
             i += 1
 
-            yield term_id, self.label, props
+            yield descriptor_name, self.label, props
